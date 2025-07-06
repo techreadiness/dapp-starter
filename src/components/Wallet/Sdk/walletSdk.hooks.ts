@@ -24,7 +24,7 @@ export const initializeKaiaWalletSdk = async () => {
         });
         return sdk as DappPortalSDKType;
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (error: any) {
+    } catch (error: unknown) {
         return null;
     }
 };
