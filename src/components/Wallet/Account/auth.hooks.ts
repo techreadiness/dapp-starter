@@ -7,7 +7,10 @@ type walletAccountState = {
   setAccount: (account: string| null) => void;
 };
 
-export const useWalletAccountStore = create<walletAccountState>((set) => ({
-  account: sessionStorage.getItem('ACCOUNT'),
-  setAccount: (account) => set({ account }),
-}));
+export const useWalletAccountStore = create<walletAccountState>((set) => {
+  const account = typeof window !== 'undefined' ?window.localStorage.getItem('account'):undefined;
+  return ({
+    account: account || null,
+    setAccount: (account) => set({ account }),
+  })
+});

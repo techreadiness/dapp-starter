@@ -7,10 +7,9 @@ const nextConfig: NextConfig = {
     webpack: (config) => {
         config.resolve.alias = {
             ...(config.resolve.alias || {}),
-            '@/components': path.resolve(__dirname, 'components'),
-            '@/utils:': path.resolve(__dirname, 'utils'),
-            // 필요 시 더 추가
+            '@': path.resolve(__dirname, 'src'),
         };
+        config.resolve.extensions.push('.mjs');
         return config;
     },
 };
