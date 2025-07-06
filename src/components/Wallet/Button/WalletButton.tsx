@@ -14,8 +14,7 @@ export const WalletButton = ()=> {
       sessionStorage.setItem('ACCOUNT',account);
       setAccount(account);
     }
-    /*TODO Add Error type*/
-    catch (error: any) {
+    catch (error: unknown) {
       console.log(error);
     }
   }
