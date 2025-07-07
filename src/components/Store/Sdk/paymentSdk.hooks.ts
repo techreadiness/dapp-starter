@@ -16,9 +16,6 @@ export type Payment = {
   pgType: PG_TYPE,
   currencyCode: CurrencyCode,
   price: number,
-  paymentStatusChangeCallbackUrl?: string,
-  lockUrl?: string,
-  unlockUrl?: string,
   items: Item[],
   testMode: boolean,
 }
@@ -26,6 +23,10 @@ export type Payment = {
 export const useCreatePaymentId = ()=> {
   return useMutation({mutationFn:async(data:Payment)=>await axios.post('/api/payment/create',data)});
 };
+
+export const useFinalizePayment = ()=>{
+  return useMutation({mutationFn:async(data:{id:string}) => await axios.post('/api/payment/finalize',data)})
+}
 
 export const usePaymentSdk = () => {
   const { sdk } = useKaiaWalletSdkStore();
