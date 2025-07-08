@@ -10,7 +10,7 @@ export default function Home() {
   return (
     <div className={styles.page}>
       <main className={styles.main}>
-          {account?<div><button onClick={()=> setCount(count=> count+1)}>{count} combo</button></div>
+          {account?<button className={styles.button} onClick={()=> setCount(count=> count+1)}>{count} combo</button>
           :<WalletButton/>}
       </main>
     </div>
