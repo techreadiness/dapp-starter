@@ -1,6 +1,6 @@
 .root {
-    margin: auto;
-    max-width: 680px;
+    margin: auto auto env(safe-area-inset-bottom);
+    max-width: 600px;
     display: flex;
     justify-content: space-between;
     width: 100%;
