@@ -3,7 +3,6 @@
 import styles from "./ItemCard.module.css";
 import {useCallback, useEffect, useState} from 'react';
 import {useWalletAccountStore} from "@/components/Wallet/Account/auth.hooks";
-import {useKaiaWalletSdk} from "@/components/Wallet/Sdk/walletSdk.hooks";
 import {
   Item,
   PG_TYPE,
@@ -19,7 +18,6 @@ export const ItemCard = (props: ItemCardProps)=> {
   const { itemIdentifier, name, price, imageUrl, currencyCode} = props;
   const [kaiaPrice, setKaiaPrice] = useState<number>(0);
   const { account } = useWalletAccountStore();
-  const { connectAndSign } = useKaiaWalletSdk();
   const { mutateAsync: createPaymentId } = useCreatePaymentId();
   const { mutateAsync: finalizePayment } = useFinalizePayment();
   const { startPayment } = usePaymentSdk();
@@ -69,15 +67,15 @@ export const ItemCard = (props: ItemCardProps)=> {
         }
       }
     }
-   },[account, createPaymentId, finalizePayment, imageUrl, itemIdentifier, kaiaPrice, name, startPayment]);
+   },[account, createPaymentId, currencyCode, finalizePayment, imageUrl, itemIdentifier, kaiaPrice, name, price, startPayment]);
 
   return (
   <div className={styles.root}>
     <div><Image src={imageUrl} alt="thumbnail" width={100} height={100} /></div>
-    <p>{name}</p>
-    <div>
-      <button onClick={()=> onPaymentButtonClick('CRYPTO')}>{kaiaPrice} KAIA</button>
-      <button onClick={()=> onPaymentButtonClick('STRIPE')}>{price} USD</button>
+    <h6 className={styles.title}>{name}</h6>
+    <div className={styles.footer}>
+      <button className={styles.button} onClick={()=> onPaymentButtonClick('CRYPTO')}>{kaiaPrice} KAIA</button>
+      <button className={styles.button} onClick={()=> onPaymentButtonClick('STRIPE')}>{price} USD</button>
     </div>
   </div>);
 }

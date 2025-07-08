@@ -30,12 +30,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-      <QueryClientProvider client={queryClient}>
-          <Bootstrap>
-              {children}
-          </Bootstrap>
-      </QueryClientProvider>
-      <Footer className={styles.footer}/>
+          <QueryClientProvider client={queryClient}>
+              <Bootstrap className={styles.root}>
+                  {children}
+                  <Footer className={styles.footer}/>
+              </Bootstrap>
+          </QueryClientProvider>
       </body>
     </html>
   );
