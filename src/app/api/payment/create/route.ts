@@ -6,7 +6,7 @@ type Item = {
     itemIdentifier: string,
     name: string,
     imageUrl: string,
-    price: number,
+    price: string,
     currencyCode: CurrencyCode,
 }
 
@@ -14,7 +14,7 @@ interface purchaseRequest {
     buyerDappPortalAddress: string,
     pgType: PG_TYPE,
     currencyCode: CurrencyCode,
-    price: number,
+    price: string,
     items: Item[],
     testMode: boolean,
 }
@@ -22,6 +22,7 @@ interface purchaseRequest {
 export async function POST(req: NextRequest) {
     try {
         const data: purchaseRequest = await req.json();
+        console.log(data);
         const result = await fetch(
             "https://payment.dappportal.io/api/payment-v1/payment/create",
             {
@@ -35,17 +36,25 @@ export async function POST(req: NextRequest) {
                     buyerDappPortalAddress: data.buyerDappPortalAddress,
                     pgType: data.pgType,
                     currencyCode: data.currencyCode,
-                    price: data.price,
-                    items: data.items,
+                    price: data.price.toString(),
+                    items: [{
+                        itemIdentifier: data.items[0].itemIdentifier,
+                        name: data.items[0].name,
+                        imageUrl: `${process.env.API_URL}/${data.items[0].imageUrl}`,
+                        price: data.items[0].price.toString(),
+                        currencyCode: data.items[0].currencyCode,
+                    }],
                     testMode: data.testMode,
-                    paymentStatusChangeCallbackUrl: `${process.env.API_URL}/webhook/status-change`,
+                    paymentStatusChangeCallbackUrl: `${process.env.API_URL}/api/payment/status-change`,
+                    //lockUrl: `${process.env.API_URL}/api/payment/status-change`,
+                    //unlockUrl:  `${process.env.API_URL}/api/payment/status-change`,
                 }),
             }
         );
+
         const { id } = await result.json();
         return NextResponse.json({id: id },{status: 200});
     } catch (error) {
-        console.error(error);
-        return NextResponse.json({ message: "Payment is failed" }, { status: 400 });
+        return NextResponse.json({ message: `Payment is failed:${error}` }, { status: 400 });
     }
 }

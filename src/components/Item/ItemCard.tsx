@@ -1,49 +1,81 @@
 "use client";
 
 import styles from "./ItemCard.module.css";
-import { useCallback } from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import {useWalletAccountStore} from "@/components/Wallet/Account/auth.hooks";
-import {useKaiaWalletSdk} from "@/components/Wallet/Sdk/walletSdk.hooks";
-import {useCreatePaymentId, usePaymentSdk} from "@/components/Store/Sdk/paymentSdk.hooks";
+import {
+  Item,
+  PG_TYPE,
+  useCreatePaymentId,
+  useFinalizePayment,
+  usePaymentSdk
+} from "@/components/Store/Sdk/paymentSdk.hooks";
 import Image from "next/image";
+import axios from "axios";
 
-export const ItemCard = ()=> {
+export type ItemCardProps = Item;
+export const ItemCard = (props: ItemCardProps)=> {
+  const { itemIdentifier, name, price, imageUrl, currencyCode} = props;
+  const [kaiaPrice, setKaiaPrice] = useState<number>(0);
   const { account } = useWalletAccountStore();
-  const { connectAndSign } = useKaiaWalletSdk();
   const { mutateAsync: createPaymentId } = useCreatePaymentId();
+  const { mutateAsync: finalizePayment } = useFinalizePayment();
   const { startPayment } = usePaymentSdk();
 
-  const onCryptoButtonClick = useCallback(async()=>{
+  useEffect(() => {
+    const getUsdToKaiaPrice = async () => {
+      const res = await axios.get('/api/usd-to-kaia');
+      const data = await res.data;
+      setKaiaPrice(data?.kaia?.toFixed(2) * Number(price));
+    };
+
+    getUsdToKaiaPrice();
+  }, [price]);
+
+
+
+  const onPaymentButtonClick = useCallback(async(type:PG_TYPE)=>{
     if(!account){
-      await connectAndSign("connect wallet");
+      alert('Connect Wallet');
     }
-    else{
-      const { data } = await createPaymentId({
-        buyerDappPortalAddress: account,
-        pgType:'CRYPTO',
-        currencyCode:'KAIA',
-        price: 1,
-        items:[{
-          itemIdentifier: 'item_1',
-          name:'ppippi',
-          price: 1,
-          imageUrl: './ppippi.png',
-          currencyCode:'KAIA',
-        }],
-        //paymentStatusChangeCallbackUrl: '/webhooks/status-change',
-        testMode:true,
-      });
-      console.log(data);
-      await startPayment(data.id);
+    else {
+      if (kaiaPrice) {
+        try{
+          const {data} = await createPaymentId({
+            buyerDappPortalAddress: account,
+            pgType: type,
+            currencyCode: type==='CRYPTO'?'KAIA':currencyCode,
+            price: type==='CRYPTO'? kaiaPrice: currencyCode==='USD'? price*100: price,
+            items: [
+              {
+                itemIdentifier: itemIdentifier,
+                name: name,
+                imageUrl: imageUrl,
+                price: type==='CRYPTO'? kaiaPrice: currencyCode==='USD'? price*100: price,
+                currencyCode: type==='CRYPTO'?'KAIA':currencyCode,
+              },
+            ],
+            testMode: true,
+          });
+          startPayment(data.id).then(()=> {
+            finalizePayment({id: data.id});
+            alert('Payment Successfully Done!');
+          });
+        }
+        catch(error:unknown){
+          alert(`Payment Failed!:${error}`);
+        }
+      }
     }
-   },[account, connectAndSign, createPaymentId, startPayment]);
+   },[account, createPaymentId, currencyCode, finalizePayment, imageUrl, itemIdentifier, kaiaPrice, name, price, startPayment]);
+
   return (
   <div className={styles.root}>
-    <div><Image src="img" alt="thumbnail" width={10} height={10} /></div>
-    <p>name</p>
-    <div>
-      <button onClick={onCryptoButtonClick}>1 KAIA</button>
-      <button>1 USD</button>
+    <div><Image src={imageUrl} alt="thumbnail" width={100} height={100} /></div>
+    <h6 className={styles.title}>{name}</h6>
+    <div className={styles.footer}>
+      <button className={styles.button} onClick={()=> onPaymentButtonClick('CRYPTO')}>{kaiaPrice} KAIA</button>
+      <button className={styles.button} onClick={()=> onPaymentButtonClick('STRIPE')}>{price} USD</button>
     </div>
   </div>);
 }

@@ -1,4 +1,6 @@
 .root {
+    margin: auto;
+    max-width: 680px;
     display: flex;
     justify-content: space-between;
     width: 100%;
