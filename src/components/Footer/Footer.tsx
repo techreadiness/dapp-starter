@@ -13,7 +13,7 @@ export const Footer = ({className}:FooterProps) => {
         <div className={clsx(styles.root,className)}>
             <Link href="/" className={clsx(styles.menu,{[styles.active]: pathname==="/"})}>HOME</Link>
             <Link href="/store" className={clsx(styles.menu,{[styles.active]: pathname==="/store"})}>STORE</Link>
-            <Link href="/friend" className={clsx(styles.menu,{[styles.active]: pathname==="/friend"})}>FRIENDS</Link>
+            <Link href="/event" className={clsx(styles.menu,{[styles.active]: pathname==="/event"})}>EVENT</Link>
             <Link href="/profile" className={clsx(styles.menu,{[styles.active]: pathname==="/profile"})}>PROFILE</Link>
         </div>
     )

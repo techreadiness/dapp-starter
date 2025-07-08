@@ -4,6 +4,7 @@ import { create } from 'zustand/react';
 import { useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import {DappPortalSDKType, default as DappPortalSDK} from "@/utils/dapp-portal-sdk";
+import {liff} from "@/utils/liff";
 
 
 type KaiaWalletSdkState = {
@@ -34,6 +35,9 @@ export const useKaiaWalletSecurity = () => {
     return useQuery({
         queryKey: ['wallet', 'sdk'],
         queryFn: async () => {
+            await liff.init({
+                liffId: process.env.NEXT_PUBLIC_LIFF_ID as string,
+            })
             setSdk(await initializeKaiaWalletSdk());
             return true;
         },
