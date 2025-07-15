@@ -2,7 +2,7 @@ This is a Dapp Starter for easier Dapp development integrated with dapp-portal-s
 
 ## Getting Started
 
-1. First, install packages.
+1. First, install packages. This project is tested with node version v20.18.0. At least Node.js >=18.0.0 is recommended. 
 
 ```bash
 npm install

@@ -55,13 +55,7 @@ export const ItemCard = (props: ItemCardProps)=> {
             ],
             testMode: true,
           });
-          startPayment(data.id).then(async ()=>{
-            const {data} = await axios.get('/api/payment/info');
-            console.log("payment result",data);
-            if(data.status === 'FINALIZED'){
-              alert('Payment finished successfully.');
-            }
-          });
+          startPayment(data.id);
         }
         catch(error:unknown){
           alert(`Payment Failed!:${error}`);
