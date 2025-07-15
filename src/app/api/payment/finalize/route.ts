@@ -7,8 +7,7 @@ interface finalizeReq {
 export async function POST(req: NextRequest) {
     try {
         const data: finalizeReq = await req.json();
-        console.log("finalize",data);
-        await fetch(
+        const res = await fetch(
             "https://payment.dappportal.io/api/payment-v1/payment/finalize",
             {
                 method: "POST",
@@ -20,7 +19,7 @@ export async function POST(req: NextRequest) {
                 }),
             }
         );
-
+        console.log("finalizeRes:", res);
         return NextResponse.json(
             { message: "Finalization is done" },
             { status: 200 }

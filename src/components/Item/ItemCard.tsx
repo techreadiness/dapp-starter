@@ -7,7 +7,6 @@ import {
   Item,
   PG_TYPE,
   useCreatePaymentId,
-  useFinalizePayment,
   usePaymentSdk
 } from "@/components/Store/Sdk/paymentSdk.hooks";
 import Image from "next/image";
@@ -19,7 +18,6 @@ export const ItemCard = (props: ItemCardProps)=> {
   const [kaiaPrice, setKaiaPrice] = useState<number>(0);
   const { account } = useWalletAccountStore();
   const { mutateAsync: createPaymentId } = useCreatePaymentId();
-  const { mutateAsync: finalizePayment } = useFinalizePayment();
   const { startPayment } = usePaymentSdk();
 
   useEffect(() => {
@@ -57,9 +55,12 @@ export const ItemCard = (props: ItemCardProps)=> {
             ],
             testMode: true,
           });
-          startPayment(data.id).then(()=> {
-            finalizePayment({id: data.id});
-            alert('Payment Successfully Done!');
+          startPayment(data.id).then(async ()=>{
+            const {data} = await axios.get('/api/payment/info');
+            console.log("payment result",data);
+            if(data.status === 'FINALIZED'){
+              alert('Payment finished successfully.');
+            }
           });
         }
         catch(error:unknown){
@@ -67,7 +68,7 @@ export const ItemCard = (props: ItemCardProps)=> {
         }
       }
     }
-   },[account, createPaymentId, currencyCode, finalizePayment, imageUrl, itemIdentifier, kaiaPrice, name, price, startPayment]);
+   },[account, createPaymentId, currencyCode, imageUrl, itemIdentifier, kaiaPrice, name, price, startPayment]);
 
   return (
   <div className={styles.root}>

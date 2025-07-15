@@ -10,7 +10,7 @@ export default function Store () {
 
     const onPaymentHistoryButtonClick = useCallback(() => {
         openPaymentHistory();
-    },[]);
+    },[openPaymentHistory]);
     return (
         <div className={styles.root}>
             <div className={styles.header}>

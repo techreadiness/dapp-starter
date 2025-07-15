@@ -1,14 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
-    console.log("hello!");
     try {
         const data = await req.json();
 
         const { status, paymentId } = data;
 
         if(status === 'CONFIRMED'){
-            const finalizeRes = await fetch(`${process.env.API_URL}/api/payment/finalize`,{
+            await fetch(`${process.env.BASE_API_URL}/api/payment/finalize`,{
                 method: "POST",
                 headers:{
                     "X-Client-Id": process.env.NEXT_PUBLIC_CLIENT_ID as string,
@@ -17,7 +16,6 @@ export async function POST(req: NextRequest) {
                 },
                 body: JSON.stringify({id: paymentId}),
             })
-            console.log("finalizeRes",finalizeRes);
         }
 
         return NextResponse.json(

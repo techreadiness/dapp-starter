@@ -18,9 +18,9 @@ To open template code, `.env*` file should include basic variables. Here's examp
 ```
 NODE_ENV=local
 NEXT_PUBLIC_CLIENT_ID={clientId provided when applying for the SDK}
-NEXT_PUBLIC_CHAIN_ID=1001
+NEXT_PUBLIC_CHAIN_ID=1001 //testnet
 CLIENT_SECRET={clientSecret provided when applying for the SDK}
-API_URL=https://localhost
+BASE_API_URL=https://dapp-starter.netlify.app //change with your domain
 NEXT_PUBLIC_LIFF_ID={LIFF ID provided when enrolling LIFF app at LINE Developers}
 ```
 
