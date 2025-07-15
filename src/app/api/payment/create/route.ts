@@ -22,7 +22,7 @@ interface purchaseRequest {
 export async function POST(req: NextRequest) {
     try {
         const data: purchaseRequest = await req.json();
-        console.log(data);
+
         const result = await fetch(
             "https://payment.dappportal.io/api/payment-v1/payment/create",
             {
@@ -40,14 +40,12 @@ export async function POST(req: NextRequest) {
                     items: [{
                         itemIdentifier: data.items[0].itemIdentifier,
                         name: data.items[0].name,
-                        imageUrl: `${process.env.API_URL}/${data.items[0].imageUrl}`,
+                        imageUrl: `${process.env.BASE_API_URL}/${data.items[0].imageUrl}`,
                         price: data.items[0].price.toString(),
                         currencyCode: data.items[0].currencyCode,
                     }],
                     testMode: data.testMode,
-                    paymentStatusChangeCallbackUrl: `${process.env.API_URL}/api/payment/status-change`,
-                    //lockUrl: `${process.env.API_URL}/api/payment/status-change`,
-                    //unlockUrl:  `${process.env.API_URL}/api/payment/status-change`,
+                    paymentStatusChangeCallbackUrl: `${process.env.BASE_API_URL}/api/payment/status-change`,
                 }),
             }
         );

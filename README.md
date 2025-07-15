@@ -2,7 +2,7 @@ This is a Dapp Starter for easier Dapp development integrated with dapp-portal-s
 
 ## Getting Started
 
-1. First, install packages.
+1. First, install packages. This project is tested with node version v20.18.0. At least Node.js >=18.0.0 is recommended. 
 
 ```bash
 npm install
@@ -18,9 +18,9 @@ To open template code, `.env*` file should include basic variables. Here's examp
 ```
 NODE_ENV=local
 NEXT_PUBLIC_CLIENT_ID={clientId provided when applying for the SDK}
-NEXT_PUBLIC_CHAIN_ID=1001
+NEXT_PUBLIC_CHAIN_ID=1001 //testnet
 CLIENT_SECRET={clientSecret provided when applying for the SDK}
-API_URL=https://localhost
+BASE_API_URL=https://dapp-starter.netlify.app //change with your domain
 NEXT_PUBLIC_LIFF_ID={LIFF ID provided when enrolling LIFF app at LINE Developers}
 ```
 

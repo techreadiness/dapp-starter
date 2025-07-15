@@ -39,6 +39,12 @@ export const usePaymentSdk = () => {
   const startPayment = async (paymentId: string) => {
     try {
       await paymentProvider.startPayment(paymentId);
+      const { data } = await axios(`/api/payment/status?id=${paymentId}`);
+      if (data.status === 'CONFIRMED' || data.status === 'FINALIZED') {
+        alert('Payment finished successfully');
+      } else {
+        alert(`Payment finished failed: ${data.status}`);
+      }
     }
     catch(error){
       console.error(error);
