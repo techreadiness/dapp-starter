@@ -1,6 +1,6 @@
 "use client";
 
-import {ReactNode} from "react";
+import {ReactNode, useEffect} from "react";
 import {useKaiaWalletSecurity} from "@/components/Wallet/Sdk/walletSdk.hooks";
 
 export type BootstrapProps = {
@@ -10,6 +10,25 @@ export type BootstrapProps = {
 
 export const Bootstrap = ({className, children}: BootstrapProps) => {
     const { isSuccess } = useKaiaWalletSecurity();
+
+    useEffect(() => {
+
+        const preventGoBack = () => {
+            if(window.location.pathname === '/') {
+                const isConfirmed = confirm('Are you sure you want to go back?');
+                if (!isConfirmed) {
+                    history.pushState(null, '', window.location.pathname)
+                }
+            }
+        };
+
+        window.addEventListener('popstate', preventGoBack);
+
+        return () => {
+            window.removeEventListener('popstate', preventGoBack);
+        };
+    }, []);
+
     return (
         <div className={className}>{isSuccess && children}</div>
     )
