@@ -4,6 +4,11 @@
   padding: 20px;
   border-radius: 12px;
   text-align: center;
+
+  @media (prefers-color-scheme: dark) {
+    border: 1px solid #cccccc;
+  }
+
 }
 
 .title {
