@@ -7,7 +7,8 @@ import {useWalletAccountStore} from "@/components/Wallet/Account/auth.hooks";
 export default function Home() {
     const { account } = useWalletAccountStore();
     const [count, setCount] = useState(0);
-  return (
+
+    return (
     <div className={styles.page}>
       <main className={styles.main}>
           {account?<button className={styles.button} onClick={()=> setCount(count=> count+1)}>{count} combo</button>
