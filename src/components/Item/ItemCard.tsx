@@ -69,7 +69,7 @@ export const ItemCard = (props: ItemCardProps)=> {
     <div><Image src={imageUrl} alt="thumbnail" width={100} height={100} /></div>
     <h6 className={styles.title}>{name}</h6>
     <div className={styles.footer}>
-      <button className={styles.button} onClick={()=> onPaymentButtonClick('CRYPTO')}>{kaiaPrice} KAIA</button>
+      <button className={styles.button} onClick={()=> onPaymentButtonClick('CRYPTO')}>{kaiaPrice === 0? '-': kaiaPrice} KAIA</button>
       <button className={styles.button} onClick={()=> onPaymentButtonClick('STRIPE')}>{price} USD</button>
     </div>
   </div>);

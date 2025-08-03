@@ -47,7 +47,7 @@ export const usePaymentSdk = () => {
       }
     }
     catch(error){
-      console.error(error);
+      alert(JSON.stringify(error));
     }
   };
 
