@@ -96,5 +96,9 @@ export const useKaiaWalletSdk = () => {
     const sendTransaction = useCallback(async(params: Transaction[])=>{
         await walletProvider.request({ method: 'kaia_sendTransaction', params: params });
     },[walletProvider]);
-  return {getAccount, requestAccount, connectAndSign, disconnectWallet, getBalance, sendTransaction}
+
+    const getErc20TokenBalance = useCallback(async(contractAddress:string,account:string)=>{
+        return await walletProvider.getErc20TokenBalance(contractAddress,account);
+    },[walletProvider]);
+  return {getAccount, requestAccount, connectAndSign, disconnectWallet, getBalance, sendTransaction, getErc20TokenBalance}
 };
