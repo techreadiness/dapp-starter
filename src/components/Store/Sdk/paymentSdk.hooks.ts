@@ -3,7 +3,7 @@ import { useMutation } from '@tanstack/react-query';
 import {useKaiaWalletSdkStore} from "@/components/Wallet/Sdk/walletSdk.hooks";
 
 export type PG_TYPE = 'CRYPTO' | 'STRIPE';
-export type CurrencyCode = 'USD'| 'KRW'|'JPY'|'TWD'|'THB'|'KAIA';
+export type CurrencyCode = 'USD'| 'KRW'|'JPY'|'TWD'|'THB'|'KAIA' |'USDT';
 export type Item = {
   itemIdentifier: string,
   name: string,
