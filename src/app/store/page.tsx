@@ -9,6 +9,7 @@ import {useWalletAccountStore} from "@/components/Wallet/Account/auth.hooks";
 import {keiHexToKaiaDecimal, microUSDTHexToUSDTDecimal} from "@/utils/format";
 
 const USDTContractAddress = '0xd077a400968890eacc75cdc901f0356c943e4fdb';
+const DELABSContractAddress = '0x23ccab1de32e06a6235a7997c266f86440c2cbe6';
 
 export default function Store () {
     const { openPaymentHistory } = usePaymentSdk();
@@ -25,7 +26,7 @@ export default function Store () {
             const formattedKaiaBalance = Number(keiHexToKaiaDecimal(balance as string)).toFixed(4);
             setKaiaBalance(formattedKaiaBalance);
         })
-        getErc20TokenBalance(USDTContractAddress, '0xd899770C1060F25Be4f0b1a74Dd4eeF5f54FB427').then(balance => {
+        getErc20TokenBalance(USDTContractAddress, account).then(balance => {
             const formattedUSDTBalance = Number(microUSDTHexToUSDTDecimal(balance as string)).toFixed(2);
             setUsdtBalance(formattedUSDTBalance);
         })
@@ -33,10 +34,10 @@ export default function Store () {
     return (
         <div className={styles.root}>
             <div className={styles.header}>
-                <div>
+                <div className={styles.balance}>
                     {kaiaBalance} KAIA
                 </div>
-                <div>
+                <div className={styles.balance}>
                     {usdtBalance} USDT
                 </div>
                 <button onClick={onPaymentHistoryButtonClick} className={styles.button}>payment history</button>
