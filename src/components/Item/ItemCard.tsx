@@ -15,7 +15,7 @@ import axios from "axios";
 export type ItemCardProps = Item;
 export const ItemCard = (props: ItemCardProps)=> {
   const { itemIdentifier, name, price, imageUrl, currencyCode} = props;
-  const [kaiaPrice, setKaiaPrice] = useState<number>(0);
+  const [kaiaPrice, setKaiaPrice] = useState<number|undefined>(0);
   const { account } = useWalletAccountStore();
   const { mutateAsync: createPaymentId } = useCreatePaymentId();
   const { startPayment } = usePaymentSdk();
@@ -23,8 +23,8 @@ export const ItemCard = (props: ItemCardProps)=> {
   useEffect(() => {
     const getUsdToKaiaPrice = async () => {
       const res = await axios.get('/api/usd-to-kaia');
-      const data = await res.data;
-      setKaiaPrice(data?.kaia?.toFixed(2) * Number(price));
+      const  data = await res.data;
+        setKaiaPrice(data?.kaia?.toFixed(4) * Number(price));
     };
 
     getUsdToKaiaPrice();
