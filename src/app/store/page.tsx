@@ -9,7 +9,6 @@ import {useWalletAccountStore} from "@/components/Wallet/Account/auth.hooks";
 import {keiHexToKaiaDecimal, microUSDTHexToUSDTDecimal} from "@/utils/format";
 
 const USDTContractAddress = '0xd077a400968890eacc75cdc901f0356c943e4fdb';
-const DELABSContractAddress = '0x23ccab1de32e06a6235a7997c266f86440c2cbe6';
 
 export default function Store () {
     const { openPaymentHistory } = usePaymentSdk();
