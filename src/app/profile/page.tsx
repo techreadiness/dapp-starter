@@ -11,7 +11,6 @@ export default function Event () {
     const onDisconnectButtonClick = useCallback(()=>{
         disconnectWallet().then(()=> {
             setAccount(null);
-            sessionStorage.removeItem('ACCOUNT');
         });
     },[disconnectWallet, setAccount]);
     return (
