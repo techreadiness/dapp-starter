@@ -3,16 +3,20 @@ import styles from "./WalletButton.module.css";
 import {Logo} from "@/components/Assets/Logo";
 import {useKaiaWalletSdk} from "@/components/Wallet/Sdk/walletSdk.hooks";
 import {useWalletAccountStore} from "@/components/Wallet/Account/auth.hooks";
+import {Dispatch, SetStateAction} from "react";
 
-export const WalletButton = ()=> {
+export type WalletButtonProps = {
+  setIsLoggedIn:  Dispatch<SetStateAction<boolean>>;
+}
+export const WalletButton = ({setIsLoggedIn}:WalletButtonProps)=> {
   const { connectAndSign } = useKaiaWalletSdk();
   const { setAccount } = useWalletAccountStore();
 
   const handleClick = async () => {
     try {
       const [account] = await connectAndSign("connect");
-      sessionStorage.setItem('ACCOUNT',account);
       setAccount(account);
+      setIsLoggedIn(true);
     }
     catch (error: unknown) {
       console.log(error);
