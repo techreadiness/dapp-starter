@@ -8,9 +8,8 @@ type walletAccountState = {
 };
 
 export const useWalletAccountStore = create<walletAccountState>((set) => {
-  const account = typeof window !== 'undefined' ?window.localStorage.getItem('account'):undefined;
   return ({
-    account: account || null,
+    account: null,
     setAccount: (account) => set({ account }),
   })
 });

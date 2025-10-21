@@ -1,7 +1,7 @@
 "use client";
 import styles from "./page.module.css";
 import {WalletButton} from "@/components/Wallet/Button/WalletButton";
-import {useEffect, useState} from "react";
+import {useState, useEffect} from "react";
 import {useWalletAccountStore} from "@/components/Wallet/Account/auth.hooks";
 import {useKaiaWalletSdk} from "@/components/Wallet/Sdk/walletSdk.hooks";
 
@@ -11,18 +11,24 @@ export default function Home() {
     const { getAccount, disconnectWallet } = useKaiaWalletSdk();
     const [count, setCount] = useState(0);
 
+
     useEffect(() => {
-        getAccount().then((account) => {
-            if(account) {
-                setIsLoggedIn(true);
-                setAccount(account);
+        (async ()=>{
+            try {
+                const account = await getAccount();
+                if (account) {
+                    setAccount(account);
+                    setIsLoggedIn(true);
+                }
             }
-        }).catch((error) => {
-            if(error.code === -32004){
-                disconnectWallet();
+            catch(error){
+                if(error) {
+                    disconnectWallet();
+                }
             }
-        })
-    }, [disconnectWallet, getAccount, setAccount]);
+        })();
+    }, [getAccount, setIsLoggedIn, setAccount, disconnectWallet]);
+
 
     return (
     <div className={styles.page}>
