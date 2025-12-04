@@ -90,7 +90,7 @@ export const useKaiaWalletSdk = () => {
 
     const disconnectWallet = useCallback(async ()=>{
         await walletProvider.disconnectWallet()
-        window.location.reload();
+        //window.location.reload();
     },[walletProvider]);
 
     const sendTransaction = useCallback(async(params: Transaction[])=>{

@@ -1,4 +1,4 @@
-This is a Dapp Starter for easier Dapp development integrated with dapp-portal-sdk and liff.
+This is a Unifi Apps Starter for easier Mini App development integrated with dapp-portal-sdk and liff.
 
 ## Getting Started
 
