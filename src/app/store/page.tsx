@@ -12,7 +12,7 @@ const USDTContractAddress = '0xd077a400968890eacc75cdc901f0356c943e4fdb';
 
 export default function Store () {
     const { openPaymentHistory } = usePaymentSdk();
-    const { getBalance, getErc20TokenBalance } = useKaiaWalletSdk();
+    const { getBalance, getErc20TokenBalanceWithDepositedBalance } = useKaiaWalletSdk();
     const { account }= useWalletAccountStore();
     const [kaiaBalance, setKaiaBalance] = useState<number | string>('-');
     const [usdtBalance, setUsdtBalance] = useState<number | string>('-');
@@ -25,7 +25,7 @@ export default function Store () {
             const formattedKaiaBalance = Number(keiHexToKaiaDecimal(balance as string)).toFixed(4);
             setKaiaBalance(formattedKaiaBalance);
         })
-        getErc20TokenBalance(USDTContractAddress, account).then(balance => {
+        getErc20TokenBalanceWithDepositedBalance(USDTContractAddress, account).then(balance => {
             const formattedUSDTBalance = Number(microUSDTHexToUSDTDecimal(balance as string)).toFixed(2);
             setUsdtBalance(formattedUSDTBalance);
         })
