@@ -14,7 +14,7 @@ export const Logo = (props: LogoProps) => (
         <defs>
             <radialGradient id="paint0_radial_1_1108" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse"
                             gradientTransform="translate(199.999 258.332) rotate(-90) scale(233.332 224.582)">
-                <stop stop-color="white" stopOpacity="0.55"/>
+                <stop stopColor="white" stopOpacity="0.55"/>
                 <stop offset="0.298077" stopColor="#EFFFDC" stopOpacity="0.7"/>
                 <stop offset="0.51" stopColor="#D2FFA5" stopOpacity="0.87"/>
                 <stop offset="0.649038" stopColor="#BEFF80" stopOpacity="0.9"/>
