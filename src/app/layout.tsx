@@ -20,6 +20,10 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Unifi Apps Starter | Unifi Apps",
   description: "Unifi Apps Starter to help your new Unifi App development",
+  metadataBase: new URL(`${process.env.NEXT_PUBLIC_URL}`),
+  openGraph: {
+      images:["/opengraph-image"]
+    }
 };
 
 export default function RootLayout({
