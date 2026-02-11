@@ -1,0 +1,4824 @@
+openapi: 3.1.0
+info:
+  title: next-market-api
+  version: 1.0.0
+  description: integration next-market-api with game!
+servers: []
+paths:
+  /api/v1/item:
+    get:
+      tags:
+      - item
+      summary: 아이템 목록 조회
+      security:
+      - Authorization: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                title: 아이템목록조회Ok
+                required:
+                - last
+                - totalElements
+                - pageNumber
+                - content
+                properties:
+                  last:
+                    type: boolean
+                    examples:
+                    - true
+                    - false
+                    description: 목록의 마지막 페이지인지 여부를 반환합니다.
+                  content:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                      - sku
+                      - imageUrl
+                      - name
+                      - description
+                      properties:
+                        sku:
+                          type: string
+                          examples:
+                          - health-potion-large
+                          - unique-armor-immortal
+                          description: 조회한 SKU를 반환합니다.
+                        name:
+                          type: array
+                          items:
+                            type: object
+                            required:
+                            - contents
+                            - lang
+                            properties:
+                              lang:
+                                type: string
+                                examples:
+                                - en
+                                - ko
+                                description: |-
+                                  ISO 639-1로 지정.
+                                  예) ko, en, zh, th, ja.
+                              contents:
+                                type: string
+                                examples:
+                                - A unique armor imbued with legendary immortal power.
+                                - Large Health Potion
+                                description: 해당 언어로 표시할 이름입니다. 미지정시 기본 언어 또는 첫 번째 항목으로 대체됩니다.
+                          description: 재화의 다국어 명칭
+                        imageUrl:
+                          type: string
+                          examples:
+                          - https://cdn.store.example.com/media/processed/potion_001.jpg
+                          - https://cdn.store.example.com/media/processed/armor_001.jpg
+                          description: 등록한 이미지의 URL을 반환합니다.
+                        policies:
+                          type: object
+                          required: []
+                          properties:
+                            minPrice:
+                              type: array
+                              items:
+                                type: object
+                                required:
+                                - price
+                                - currency
+                                properties:
+                                  price:
+                                    type: number
+                                    format: double
+                                    examples:
+                                    - 10
+                                    description: currency 기준 최소 금액을 지정합니다. Decimal Type 입니다.
+                                  currency:
+                                    type: string
+                                    examples:
+                                    - USD
+                            blackList:
+                              type: array
+                              items:
+                                type: string
+                            whiteList:
+                              type: array
+                              items:
+                                type: string
+                        abilities:
+                          type: array
+                          items:
+                            type: object
+                            required:
+                            - name
+                            - optionType
+                            - unitType
+                            - value
+                            properties:
+                              name:
+                                type: array
+                                items:
+                                  type: object
+                                  required:
+                                  - lang
+                                  - contents
+                                  properties:
+                                    lang:
+                                      type: string
+                                      examples:
+                                      - ko
+                                      - en
+                                      description: 언어 코드 ex) en, ko, zh, ja, th
+                                    contents:
+                                      type: string
+                                      examples:
+                                      - speed
+                                      description: 언어 코드에 해당하는 이름을 지정합니다.
+                                description: 능력치의 이름을 지정합니다.
+                              value:
+                                type: number
+                                format: double
+                                examples:
+                                - 10
+                                description: 표시할 기본 능력 수치를 지정합니다. Decimal Type 입니다.
+                              unitType:
+                                enum:
+                                - NONE
+                                - PERCENTAGE
+                                - NUMERIC
+                                - LEVEL
+                                type: string
+                                default: NONE
+                                examples:
+                                - PERCENTAGE
+                                description: |-
+                                  능력치를 어떤 형식으로 표현할지를 결정하여 지정합니다.
+
+                                  NONE: 입력한 수치 그대로 노출
+
+                                  PERCENTAGE: 100% 형식의 표시
+
+                                  NUMERIC: +100 형식으로 표시
+
+                                  LEVEL: 100Lv 형식으로 표시
+
+
+                                  예시는 abilities.value의 값을 100으로 지정했을 때 형식입니다.
+                              optionType:
+                                enum:
+                                - BASIC
+                                - CONTRAINT
+                                - AMOUNT
+                                type: string
+                                default: BASIC
+                                examples:
+                                - BASIC
+                                description: "능력치의 옵션 분류를 지정합니다. 옵션 분류에 따라 표기 위치가 달라집니다.\n\nBASIC: 기본 능력치\n\nCONTRAINT: 제약 옵션 \n\n예) 레벨제한\n\nAMOUNT: 아이템에 포함된 수량"
+                          description: 아이템이 가지는 기본 능력치를 지정합니다. 소모성 아이템의 경우는 지정할 필요없으며 변형되지 않은 아이템의 기본 능력치로서 표시됩니다.
+                        description:
+                          type: array
+                          items:
+                            type: object
+                            required:
+                            - lang
+                            - contents
+                            properties:
+                              lang:
+                                type: string
+                                examples:
+                                - ko
+                                - en
+                                description: |-
+                                  ISO 639-1로 지정.
+                                  예) ko, en, zh, th, ja.
+                              contents:
+                                type: string
+                                examples:
+                                - A powerful potion that restores a large amount of health.
+                                - A unique armor imbued with legendary immortal power.
+                                description: 언어 코드에 해당하는 문자열을 지정합니다.
+                          description: 사용자에게 표시할 재화에 대한 설명을 다국어로 지정합니다.
+                        subItemList:
+                          type: array
+                          items:
+                            type: object
+                            required:
+                            - sku
+                            - amount
+                            - name
+                            - description
+                            - policies
+                            properties:
+                              sku:
+                                type: string
+                                description: 패키지에 포함된 품목의 SKU입니다.
+                              name:
+                                type: array
+                                items:
+                                  type: object
+                                  required:
+                                  - lang
+                                  - contents
+                                  properties:
+                                    lang:
+                                      type: string
+                                      description: |-
+                                        ISO 639-1로 지정.
+                                        예) ko, en, zh, th, ja.
+                                    contents:
+                                      type: string
+                                      description: 해당 언어로 표시할 이름입니다. 미지정시 기본 언어 또는 첫 번째 항목으로 대체됩니다.
+                                description: 재화의 다국어 명칭
+                              amount:
+                                type: integer
+                                examples:
+                                - 10
+                                description: 해당 SKU의 수량입니다.
+                              policies:
+                                type: object
+                                required:
+                                - whiteList
+                                - blackList
+                                - minPrice
+                                properties:
+                                  minPrice:
+                                    type: array
+                                    items:
+                                      type: object
+                                      required:
+                                      - price
+                                      - currency
+                                      properties:
+                                        price:
+                                          $ref: '#/components/schemas/Decimal'
+                                        currency:
+                                          type: string
+                                          examples:
+                                          - USD
+                                          description: 최소금액을 지정할 화폐 유형을 지정합니다. ex) TWD, USD, USDT
+                                  blackList:
+                                    type: array
+                                    items:
+                                      type: string
+                                    description: 아이템 판매, 구매, 노출 등을 허용하지 않을 국가를 지정합니다. 미지정시 사용할 수 없으며 whiteList와 혼용할 수 없습니다.
+                                  whiteList:
+                                    type: array
+                                    items:
+                                      type: string
+                                    description: 아이템 판매, 구매, 노출 등을 허용할 국가를 지정합니다. 미지정시 전체 허용이며 blackList와 혼용할 수 없습니다.
+                              description:
+                                type: array
+                                items:
+                                  type: object
+                                  required:
+                                  - contents
+                                  - lang
+                                  properties:
+                                    lang:
+                                      type: string
+                                      description: |-
+                                        ISO 639-1로 지정.
+                                        예) ko, en, zh, th, ja.
+                                    contents:
+                                      type: string
+                                      description: 언어 코드에 해당하는 문자열을 지정합니다.
+                          description: 패키지 형태로 등록된 경우 반환합니다.
+                    description: 등록된 아이템이 없다면 빈 리스트를 반환합니다.
+                  pageNumber:
+                    type: integer
+                    examples:
+                    - 1
+                    - 0
+                    description: 조회한 페이지의 번호를 반환합니다.
+                  totalElements:
+                    type: integer
+                    examples:
+                    - 10
+                    description: 목록의 총 수량을 반환합니다.
+          description: The request was successful, and the server has returned the requested resource in the response body.
+      parameters:
+      - in: query
+        name: page
+        style: form
+        schema:
+          type: integer
+        explode: true
+        required: true
+        description: 0부터 시작하는 페이지
+        allowReserved: false
+      - in: query
+        name: size
+        style: form
+        schema:
+          type: integer
+        explode: true
+        required: true
+        description: |-
+          한번에 조회할 수 있는 페이지 크기입니다
+          최대 100까지 지정할 수 있고 기본값은 50입니다.
+        allowReserved: false
+      - in: header
+        name: Content-Type
+        style: simple
+        schema:
+          type: string
+        explode: false
+        required: true
+        description: application/json
+        allowReserved: false
+      description: 등록한 아이템의 목록을 반환합니다.
+      operationId: 아이템목록조회
+    post:
+      tags:
+      - item
+      summary: '아이템 등록 '
+      security:
+      - Authorization: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: 'null'
+                title: 아이템등록Ok
+          description: <응답 본문이 비어있습니다.>
+      parameters: []
+      description: |-
+        `preview` `prod`
+
+        게임 내 재화로서 스토어에서 표현하고 판매 가능하도록 품목코드(SKU)를 등록하는 과정입니다. 등록된 재화는 개별 아이템으로 단일 재화로 치환 가능한 품목과 여러 재화로 풀어볼 수 있는 품목을 각각 등록할 수 있습니다.
+
+        sku 등록 시에 언더바 `_`  구분자는 사용이 불가하며, 하이픈 `-` 사용을 권장합니다.
+      operationId: 아이템등록
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - sku
+              - imageUrl
+              - name
+              - description
+              properties:
+                sku:
+                  type: string
+                  examples:
+                  - test
+                  description: |-
+                    품목코드
+                    동일한 품목코드는 재등록 불가하며 입력된 아이템의 품목코드를 변경할 수 없습니다.
+                name:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                    - lang
+                    - contents
+                    properties:
+                      lang:
+                        type: string
+                        examples:
+                        - ko
+                        - en
+                        - zh
+                        - th
+                        - ja
+                        description: ISO 639-1로 지정.
+                      contents:
+                        type: string
+                        examples:
+                        - Immortal Unique Armor
+                        description: 해당 언어로 표시할 이름입니다. 미지정시 기본 언어 또는 첫 번째 항목으로 대체됩니다.
+                  description: 사용자에게 표시할 재화명을 다국어로 지정합니다.
+                imageUrl:
+                  type: string
+                  examples:
+                  - https://cdn.store.example.com/media/processed/armor_001.jpg
+                  description: 미디어 파일 업로드를 통해 반환받은 URL을 지정합니다. 정방형 최소 128x128 크기의 이미지를 권장합니다.
+                policies:
+                  type: object
+                  required: []
+                  properties:
+                    minPrice:
+                      type: array
+                      items:
+                        type: object
+                        required:
+                        - price
+                        - currency
+                        properties:
+                          price:
+                            type: integer
+                            format: int32
+                            examples:
+                            - 10
+                            description: currency 기준 최소 금액을 지정합니다. Decimal type 이어야 합니다.
+                          currency:
+                            type: string
+                            examples:
+                            - USD
+                            description: 최소금액을 지정할 화폐 유형을 지정합니다. ex) TWD, USD, USDT
+                      description: C2C 최소 판매가를 제한하는 정책을 추가할 수 있습니다.
+                    blackList:
+                      type: array
+                      items:
+                        type: string
+                      description: 아이템 판매, 구매, 노출 등을 허용하지 않을 국가를 지정합니다. 미지정시 사용할 수 없으며 whiteList와 혼용할 수 없습니다.
+                    whiteList:
+                      type: array
+                      items:
+                        type: string
+                      description: 아이템 판매, 구매, 노출 등을 허용할 국가를 지정합니다. 미지정시 전체 허용이며 blackList와 혼용할 수 없습니다.
+                  description: 아이템에 세부 정책을 추가할 수 있습니다.
+                abilities:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                    - name
+                    - optionType
+                    - unitType
+                    - value
+                    properties:
+                      name:
+                        type: array
+                        items:
+                          type: object
+                          required:
+                          - lang
+                          - contents
+                          properties:
+                            lang:
+                              type: string
+                              examples:
+                              - en
+                              description: 언어 코드 ex) en, ko, zh, ja, th
+                            contents:
+                              type: string
+                              description: 언어 코드에 해당하는 이름을 지정합니다.
+                        description: 능력치의 이름을 지정합니다.
+                      value:
+                        $ref: '#/components/schemas/Decimal'
+                      unitType:
+                        enum:
+                        - NONE
+                        - PERCENTAGE
+                        - NUMERIC
+                        - LEVEL
+                        type: string
+                        default: NONE
+                        examples:
+                        - PERCENTAGE
+                        description: |-
+                          능력치를 어떤 형식으로 표현할지를 결정하여 지정합니다.
+
+                          NONE: 입력한 수치 그대로 노출
+
+                          PERCENTAGE: 100% 형식의 표시
+
+                          NUMERIC: +100 형식으로 표시
+
+                          LEVEL: 100Lv 형식으로 표시
+
+
+                          예시는 abilities.value의 값을 100으로 지정했을 때 형식입니다.
+                      optionType:
+                        enum:
+                        - BASIC
+                        - CONTRAINT
+                        - AMOUNT
+                        type: string
+                        default: BASIC
+                        examples:
+                        - BASIC
+                        description: "능력치의 옵션 분류를 지정합니다. 옵션 분류에 따라 표기 위치가 달라집니다.\n\nBASIC: 기본 능력치\n\nCONTRAINT: 제약 옵션 \n\n예) 레벨제한\n\nAMOUNT: 아이템에 포함된 수량"
+                  description: 아이템이 가지는 기본 능력치를 지정합니다. 소모성 아이템의 경우는 지정할 필요없으며 변형되지 않은 아이템의 기본 능력치로서 표시됩니다.
+                description:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                    - lang
+                    - contents
+                    properties:
+                      lang:
+                        type: string
+                        examples:
+                        - ko
+                        - en
+                        description: |-
+                          ISO 639-1로 지정.
+                          예) ko, en, zh, th, ja.
+                      contents:
+                        type: string
+                        examples:
+                        - A unique armor imbued with legendary immortal power.
+                        description: 언어 코드에 해당하는 문자열을 지정합니다.
+                  description: 사용자에게 표시할 재화에 대한 설명을 다국어로 지정합니다.
+                subItemList:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                    - sku
+                    - amount
+                    properties:
+                      sku:
+                        type: string
+                        examples:
+                        - subItem
+                        description: 하위 SKU는 이전에 아이템으로 미리 등록되어 있어야 합니다.
+                      amount:
+                        type: integer
+                        examples:
+                        - 10
+                        description: 패키지에 포함되는 아이템의 수량을 지정합니다.
+                  description: 패키지 형태로 다수의 아이템을 포함하는 재화의 경우에만 지정합니다.
+        required: true
+        description: ''
+  /api/v1/sale/b2c:
+    get:
+      tags:
+      - sale
+      summary: 판매 목록 조회
+      security:
+      - Authorization: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                title: 판매목록조회Ok
+                required:
+                - last
+                - pageNumber
+                - totalElements
+                - content
+                - multiCurrencyPrice
+                properties:
+                  last:
+                    type: boolean
+                    examples:
+                    - true
+                    - false
+                    description: 마지막 페이지 여부
+                  content:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                      - id
+                      - itemList
+                      - title
+                      - description
+                      - refundType
+                      - status
+                      - mediaType
+                      - mediaUrl
+                      - limitPurchaseCount
+                      - limitMaxPurchasePerOnce
+                      - periodType
+                      - periodicType
+                      - openedAt
+                      - closedAt
+                      - sectionId
+                      - displayOrder
+                      - phase
+                      - multiCurrencyPrice
+                      properties:
+                        id:
+                          $ref: '#/components/schemas/Long'
+                          description: 상품의 식별자로 추후 링크 이동 등에서 대상 상품을 특정해서 파라미터로 사용할 수 있습니다.
+                        phase:
+                          enum:
+                          - READY_FOR_SALE
+                          - ON_SALE
+                          - CLOSED
+                          type: string
+                          default: READY_FOR_SALE
+                          examples:
+                          - READY_FOR_SALE
+                          description: |-
+                            현재 판매 상품의 판매 기간 상태를 반환합니다.
+                            READY_FOR_SALE: 상품의 판매 시작 시각 이전
+                            ON_SALE: 상품 판매 중
+                            CLOSED: 상품 판매 시각 이후 종료된 상태
+                        price:
+                          $ref: '#/components/schemas/BigDecimal'
+                          description: (deprecated 25.7.10) 등록한 상품의 가격입니다.
+                        title:
+                          type: array
+                          items:
+                            type: object
+                            required:
+                            - lang
+                            - contents
+                            properties:
+                              lang:
+                                type: string
+                                description: 언어코드(en,ko,ja,th,zh)입니다.
+                              contents:
+                                type: string
+                                description: 언어코드에 해당하는 상품의 이름입니다.
+                          description: 사용자에게 노출할 판매 상품의 이름을 다국어로 지정합니다.
+                        status:
+                          enum:
+                          - ACTIVE
+                          - INACTIVE
+                          type: string
+                          default: ACTIVE
+                          examples:
+                          - ACTIVE
+                          description: |-
+                            현재 판매 상품의 활성화 상태를 반환합니다.
+                            ACTIVE: 상품이 활성화 되어있음
+                            INACTIVE: 상품이 비활성화 된 상태
+                        resetAt:
+                          $ref: '#/components/schemas/Timestamp'
+                          description: 설정한 periodicType의 초기화 주기를 실행할 기준 일시입니다.
+                        closedAt:
+                          $ref: '#/components/schemas/Timestamp'
+                          description: 판매를 종료할 시간입니다. 판매가 종료되면 해당 상품은 더 이상 노출되지 않으며, 종료 직전에 구매를 시도한 경우 판매 종료 이후에도 구매가 될 수 있습니다.
+                        itemList:
+                          type: array
+                          items:
+                            type: object
+                            required:
+                            - sku
+                            - amount
+                            - imageUrl
+                            - name
+                            - description
+                            properties:
+                              sku:
+                                type: string
+                                description: 품목코드입니다.
+                              name:
+                                type: array
+                                items:
+                                  type: object
+                                  required:
+                                  - lang
+                                  - contents
+                                  properties:
+                                    lang:
+                                      type: string
+                                      description: 언어코드(en,ko,ja,th,zh)입니다.
+                                    contents:
+                                      type: string
+                                      description: 언어코드에 해당하는 아이템의 이름입니다.
+                                description: 다국어로 지정된 게임 아이템 이름입니다.
+                              amount:
+                                type: integer
+                                description: 한건의 구매에서 지정한 아이템을 몇개 입수할 수 있는지 수량 입니다.
+                              imageUrl:
+                                type: string
+                                description: 아이템에 등록된 이미지를 반환합니다.
+                              description:
+                                type: array
+                                items:
+                                  type: object
+                                  required:
+                                  - lang
+                                  - contents
+                                  properties:
+                                    lang:
+                                      type: string
+                                      description: 언어코드(en,ko,ja,th,zh)입니다.
+                                    contents:
+                                      type: string
+                                      description: 언어코드에 해당하는 아이템의 설명입니다.
+                                description: 다국어로 지정된 게임 아이템 설명입니다.
+                              subItemList:
+                                type: array
+                                items:
+                                  type: object
+                                  required:
+                                  - sku
+                                  - amount
+                                  - imageUrl
+                                  - name
+                                  - description
+                                  properties:
+                                    sku:
+                                      type: string
+                                      description: 품목코드입니다.
+                                    name:
+                                      type: array
+                                      items:
+                                        type: object
+                                        required:
+                                        - lang
+                                        - contents
+                                        properties:
+                                          lang:
+                                            type: string
+                                            description: 언어코드(en,ko,ja,th,zh)입니다.
+                                          contents:
+                                            type: string
+                                            description: 언어코드에 해당하는 아이템의 이름입니다.
+                                      description: 다국어로 지정된 게임 아이템 이름입니다.
+                                    amount:
+                                      type: integer
+                                      description: 포함된 구성의 아이템의 수량을 반환합니다.
+                                    imageUrl:
+                                      type: string
+                                      description: 아이템에 등록된 이미지를 반환합니다.
+                                    description:
+                                      type: array
+                                      items:
+                                        type: object
+                                        required:
+                                        - lang
+                                        - contents
+                                        properties:
+                                          lang:
+                                            type: string
+                                            description: 언어코드(en,ko,ja,th,zh)입니다.
+                                          contents:
+                                            type: string
+                                            description: 언어코드에 해당하는 아이템의 설명입니다.
+                                      description: 다국어로 지정된 게임 아이템 설명입니다.
+                                description: 패키지 유형의 아이템인 경우 구성품을 목록으로 반환합니다.
+                          description: 등록된 상품의 구성 아이템 정보를 반환합니다.
+                        mediaUrl:
+                          type: string
+                          description: |-
+                            등록된 커버 이미지 또는 영상의 URL 입니다.
+                            레티나, PC모드 지원을 위해 정방형 944 x 944 이상으로 등록하는 것을 권장합니다.
+                        openedAt:
+                          $ref: '#/components/schemas/Timestamp'
+                          description: 판매를 게시할 시간입니다. 가급적 하루 정도의 유예기간을 두어 미래 시간을 예약을 하며, 급하게 설정할 필요가 있다면 협의가 필요합니다.
+                        mediaType:
+                          enum:
+                          - VIDEO
+                          - IMAGE
+                          type: string
+                          default: IMAGE
+                          examples:
+                          - IMAGE
+                          description: 등록된 커버의 유형을 반환합니다. (VIDEO, IMAGE)
+                        sectionId:
+                          $ref: '#/components/schemas/Long'
+                          description: 상품이 노출 될 section의 id입니다. 설정하지 않았을 경우 첫 번째 section에 위치합니다.
+                        periodType:
+                          type: string
+                          description: (deprecated 25.7.10) 설정한 계정당 구매 가능 수량의 초기화 주기입니다. 설정하지 않았을 경우 'NONE' 으로 응답됩니다.
+                        refundType:
+                          enum:
+                          - REFUNDABLE
+                          - NON_REFUNDABLE
+                          - PARTIALLY_REFUNDABLE
+                          type: string
+                          default: REFUNDABLE
+                          examples:
+                          - REFUNDABLE
+                          description: |-
+                            설정한 상품의 환불 정책입니다. 환불과 관련해서는 미리 협의가 필요합니다.
+                            REFUNDABLE : 모든 국가 환불 가능
+                            NON_REFUNDABLE : 환불 불가능
+                            PARTIALLY_REFUNDABLE : 일부 국가만 환불 가능
+                        description:
+                          type: array
+                          items:
+                            type: object
+                            required:
+                            - lang
+                            - contents
+                            properties:
+                              lang:
+                                type: string
+                                description: 언어코드(en,ko,ja,th,zh)입니다.
+                              contents:
+                                type: string
+                                description: 언어코드에 해당하는 상품의 설명입니다.
+                          description: 사용자에게 상품을 효과적으로 표현하고 상품의 특징을 알 수 있는 설명을 다국어로 지정합니다.
+                        currencyType:
+                          type: string
+                          description: (deprecated 25.7.10) 등록한 상품의 가격 통화입니다.
+                        displayOrder:
+                          type: integer
+                          description: section 내에서 노출되는 순서입니다. 설정하지 않았을 경우 첫 번째로 위치합니다.
+                        periodicType:
+                          type: string
+                          description: (since 25.7.10) 설정한 계정당 구매 가능 수량의 초기화 주기입니다. 설정하지 않았을 경우 'NONE' 으로 응답됩니다.
+                        limitStockAmount:
+                          $ref: '#/components/schemas/Long'
+                          description: |-
+                            등록 시 설정한 총 재고의 수량입니다. 수량만큼의 구매가 발생하면 매진 상태로 노출되며 더 이상 구매를 할 수 없는 상태가 됩니다.
+                            총 재고의 수량은 판매 도중이나 매진일 때에도 변경이 가능합니다.
+                        limitPurchaseCount:
+                          type: integer
+                          description: 등록된 상품의 한 계정당 구매할 수 있는 최대 개수입니다. periodicType을 이용해 기간별 구매 제한 개수를 초기화할 수 있습니다.
+                        multiCurrencyPrice:
+                          type: object
+                          description: |-
+                            (since 25.7.10) 등록한 상품의 통화와 가격입니다.
+                            Map<String, BigDecimal> 타입이 되어야 합니다.
+                        limitMaxPurchasePerOnce:
+                          type: integer
+                          description: 등록된 상품의 한번의 결제로 구매할 수 있는 최대 개수입니다. 판매가격이나 상품의 특성에 따라 수량을 조절해야 사용자가 구매하는 과정에서 불필요한 오류가 발생하지 않을 수 있습니다. 최대 개수는 50개입니다.
+                        nonRefundableCountryList:
+                          type: array
+                          items:
+                            type: string
+                          description: PARTIALLY_REFUNDABLE 환불 정책 일 때 환불이 불가능한 국가의 목록입니다.
+                    description: 페이지, 필터 조건에 해당하는 상품 목록
+                  pageNumber:
+                    type: integer
+                    description: 현재 페이지 번호
+                  totalElements:
+                    $ref: '#/components/schemas/Long'
+                    description: 필터 조건에 해당하는 총 목록 수
+                  multiCurrencyPrice:
+                    type: object
+                    description: |-
+                      (since 25.7.10) 등록한 상품의 통화와 가격입니다.
+
+                      Map<String, BigDecimal> 타입입니다.
+          description: The request was successful, and the server has returned the requested resource in the response body.
+      parameters:
+      - in: header
+        name: Content-Type
+        style: simple
+        schema:
+          type: string
+        explode: false
+        required: true
+        description: application/json
+        allowReserved: false
+      - in: query
+        name: page
+        style: form
+        schema:
+          type: integer
+        explode: true
+        required: false
+        description: 0부터 시작하는 페이지의 번호입니다.
+        allowReserved: false
+      - in: query
+        name: size
+        style: form
+        schema:
+          type: integer
+        explode: true
+        required: false
+        description: '페이지당 조회할 목록 수량. 최대 20까지 지정 가능 (default: 20)'
+        allowReserved: false
+      - in: query
+        name: statuses
+        style: form
+        schema:
+          type: string
+        explode: true
+        required: false
+        description: |-
+          상품의 활성화 상태 리스트로 목록을 필터링합니다. 콤마(,) 구분자로 조회할 대상만 지정합니다.
+          ACTIVE : 활성화 된 상태
+          INACTIVE : 비활성화 된 상태
+        allowReserved: false
+      - in: query
+        name: phases
+        style: form
+        schema:
+          type: string
+        explode: true
+        required: false
+        description: |-
+          상품의 판매 시간 상태 리스트로 목록을 필터링합니다. 콤마(,) 구분자로 조회할 대상만 지정합니다.
+          READY_FOR_SALE: 판매 시간 이전
+          ON_SALE: 판매 중
+          CLOSED: 판매 시간이 종료됨
+        allowReserved: false
+      - in: query
+        name: ids
+        style: form
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/Long'
+        explode: true
+        required: false
+        description: 판매 등록 식별자 목록으로 필터링합니다. 콤마(,) 구분자로 조회할 대상만 지정합니다. ex) ids=1,2,3
+        allowReserved: false
+      description: |+
+        `preview` `prod`
+
+        판매 등록한 상품을 등록한 순서의 역순으로 조회합니다.
+
+      operationId: 판매목록조회
+    post:
+      tags:
+      - sale
+      summary: 판매 등록
+      security:
+      - Authorization: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                title: 판매등록Ok
+                required:
+                - id
+                - itemList
+                - requestId
+                - title
+                - description
+                - currencyType
+                - price
+                - multiCurrencyPrice
+                - refundType
+                - status
+                - mediaType
+                - mediaUrl
+                - limitPurchaseCount
+                - limitMaxPurchasePerOnce
+                - periodType
+                - periodicType
+                - closedAt
+                - sectionId
+                - displayOrder
+                - phase
+                - openedAt
+                properties:
+                  id:
+                    $ref: '#/components/schemas/Long'
+                    description: 상품의 식별자로 추후 링크 이동 등에서 대상 상품을 특정해서 파라미터로 사용할 수 있습니다.
+                  phase:
+                    enum:
+                    - READY_FOR_SALE
+                    - ON_SALE
+                    - CLOSED
+                    type: string
+                    default: READY_FOR_SALE
+                    examples:
+                    - READY_FOR_SALE
+                    description: |-
+                      현재 판매 상품의 판매 기간 상태를 반환합니다.
+                      READY_FOR_SALE: 상품의 판매 시작 시각 이전
+                      ON_SALE: 상품 판매 중
+                      CLOSED: 상품 판매 시각 이후 종료된 상태
+                  price:
+                    $ref: '#/components/schemas/BigDecimal'
+                    description: (deprecated 25.7.10) 등록한 상품의 가격입니다.
+                  title:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                      - lang
+                      - contents
+                      properties:
+                        lang:
+                          type: string
+                          description: 언어코드(en,ko,ja,th,zh)입니다.
+                        contents:
+                          type: string
+                          description: 언어코드에 해당하는 상품의 이름입니다.
+                    description: 사용자에게 노출할 판매 상품의 이름을 다국어로 지정합니다.
+                  status:
+                    enum:
+                    - ACTIVE
+                    - INACTIVE
+                    type: string
+                    default: ACTIVE
+                    examples:
+                    - ACTIVE
+                    description: |-
+                      현재 판매 상품의 활성화 상태를 반환합니다.
+                      ACTIVE: 상품이 활성화 되어있음
+                      INACTIVE: 상품이 비활성화 된 상태
+                  resetAt:
+                    $ref: '#/components/schemas/Timestamp'
+                    description: 설정한 periodicType의 초기화 주기를 실행할 기준 일시입니다.
+                  closedAt:
+                    $ref: '#/components/schemas/Timestamp'
+                    description: 판매를 종료할 시간입니다. 판매가 종료되면 해당 상품은 더 이상 노출되지 않으며, 종료 직전에 구매를 시도한 경우 판매 종료 이후에도 구매가 될 수 있습니다.
+                  itemList:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                      - sku
+                      - amount
+                      - imageUrl
+                      - name
+                      - description
+                      properties:
+                        sku:
+                          type: string
+                          examples:
+                          - unique-armor-immortal
+                          description: 품목코드입니다.
+                        name:
+                          type: array
+                          items:
+                            type: object
+                            required:
+                            - lang
+                            - contents
+                            properties:
+                              lang:
+                                type: string
+                                description: 언어코드(en,ko,ja,th,zh)입니다.
+                              contents:
+                                type: string
+                                description: 언어코드에 해당하는 아이템의 이름입니다.
+                          description: 다국어로 지정된 게임 아이템 이름입니다.
+                        amount:
+                          type: integer
+                          examples:
+                          - 2
+                          description: 한건의 구매에서 지정한 아이템을 몇개 입수할 수 있는지 수량 입니다.
+                        imageUrl:
+                          type: string
+                          description: 아이템에 등록된 이미지를 반환합니다.
+                        description:
+                          type: array
+                          items:
+                            type: object
+                            required:
+                            - lang
+                            - contents
+                            properties:
+                              lang:
+                                type: string
+                                description: 언어코드(en,ko,ja,th,zh)입니다.
+                              contents:
+                                type: string
+                                description: 언어코드에 해당하는 아이템의 설명입니다.
+                          description: 다국어로 지정된 게임 아이템 설명입니다.
+                        subItemList:
+                          type: array
+                          items:
+                            type: object
+                            required:
+                            - sku
+                            - imageUrl
+                            - name
+                            - amount
+                            - description
+                            properties:
+                              sku:
+                                type: string
+                                description: 품목코드입니다.
+                              name:
+                                type: array
+                                items:
+                                  type: object
+                                  required:
+                                  - lang
+                                  - contents
+                                  properties:
+                                    lang:
+                                      type: string
+                                      description: 언어코드(en,ko,ja,th,zh)입니다.
+                                    contents:
+                                      type: string
+                                      description: 언어코드에 해당하는 아이템의 이름입니다.
+                                description: 다국어로 지정된 게임 아이템 이름입니다.
+                              amount:
+                                type: integer
+                                description: 포함된 구성의 아이템의 수량을 반환합니다.
+                              imageUrl:
+                                type: string
+                                description: 아이템에 등록된 이미지를 반환합니다.
+                              description:
+                                type: array
+                                items:
+                                  type: object
+                                  required:
+                                  - lang
+                                  - contents
+                                  properties:
+                                    lang:
+                                      type: string
+                                      description: 언어코드(en,ko,ja,th,zh)입니다.
+                                    contents:
+                                      type: string
+                                      description: 언어코드에 해당하는 아이템의 설명입니다.
+                                description: 다국어로 지정된 게임 아이템 설명입니다.
+                          description: 패키지 유형의 아이템인 경우 구성품을 목록으로 반환합니다.
+                    description: 등록된 상품의 구성 아이템 정보를 반환합니다.
+                  mediaUrl:
+                    type: string
+                    examples:
+                    - https://cdn.store.example.com/media/processed/package_immortal_armor.jpg
+                    description: |-
+                      등록된 커버 이미지 또는 영상의 URL 입니다.
+                      레티나, PC모드 지원을 위해 정방형 944 x 944 이상으로 등록하는 것을 권장합니다.
+                  openedAt:
+                    $ref: '#/components/schemas/Timestamp'
+                    description: 판매를 게시할 시간입니다. 가급적 하루 정도의 유예기간을 두어 미래 시간을 예약을 하며, 급하게 설정할 필요가 있다면 협의가 필요합니다.
+                  mediaType:
+                    enum:
+                    - VIDEO
+                    - IMAGE
+                    type: string
+                    default: IMAGE
+                    examples:
+                    - IMAGE
+                    description: 등록된 커버의 유형을 반환합니다. (VIDEO, IMAGE)
+                  requestId:
+                    type: string
+                    examples:
+                    - sale-req-2025-001
+                    description: 요청시 입력한 요청식별자를 반환합니다.
+                  sectionId:
+                    $ref: '#/components/schemas/Long'
+                    description: 상품이 노출 될 section의 id입니다. 설정하지 않았을 경우 첫 번째 section에 위치합니다.
+                  periodType:
+                    type: string
+                    examples:
+                    - NONE
+                    description: (deprecated 25.7.10) 설정한 계정당 구매 가능 수량의 초기화 주기입니다. 설정하지 않았을 경우 'NONE' 으로 응답됩니다.
+                  refundType:
+                    type: string
+                    description: |-
+                      설정한 상품의 환불 정책입니다. 환불과 관련해서는 미리 협의가 필요합니다.
+                      REFUNDABLE : 모든 국가 환불 가능
+                      NON_REFUNDABLE : 환불 불가능
+                      PARTIALLY_REFUNDABLE : 일부 국가만 환불 가능
+                  description:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                      - lang
+                      - contents
+                      properties:
+                        lang:
+                          type: string
+                          description: 언어코드(en,ko,ja,th,zh)입니다.
+                        contents:
+                          type: string
+                          description: 언어코드에 해당하는 상품의 설명입니다.
+                    description: 사용자에게 상품을 효과적으로 표현하고 상품의 특징을 알 수 있는 설명을 다국어로 지정합니다.
+                  currencyType:
+                    type: string
+                    description: (deprecated 25.7.10) 등록한 상품의 가격 통화입니다. (TWD) 지원 통화는 계속 추가될 수 있습니다.
+                  displayOrder:
+                    type: integer
+                    description: section 내에서 노출되는 순서입니다. 설정하지 않았을 경우 첫 번째로 위치합니다.
+                  periodicType:
+                    type: string
+                    examples:
+                    - NONE
+                    description: (since 25.7.10) 설정한 계정당 구매 가능 수량의 초기화 주기입니다. 설정하지 않았을 경우 'NONE' 으로 응답됩니다.
+                  limitStockAmount:
+                    $ref: '#/components/schemas/Long'
+                    description: |-
+                      등록 시 설정한 총 재고의 수량입니다. 수량만큼의 구매가 발생하면 매진 상태로 노출되며 더 이상 구매를 할 수 없는 상태가 됩니다.
+                      총 재고의 수량은 판매 도중이나 매진일 때에도 변경이 가능합니다.
+                  limitPurchaseCount:
+                    type: integer
+                    description: 등록된 상품의 한 계정당 구매할 수 있는 최대 개수입니다. periodType을 이용해 기간별 구매 제한 개수를 초기화할 수 있습니다.
+                  multiCurrencyPrice:
+                    type: object
+                    description: (since 25.7.10) 등록한 상품의 통화와 가격입니다.
+                  limitMaxPurchasePerOnce:
+                    type: integer
+                    description: 등록된 상품의 한번의 결제로 구매할 수 있는 최대 개수입니다. 판매가격이나 상품의 특성에 따라 수량을 조절해야 사용자가 구매하는 과정에서 불필요한 오류가 발생하지 않을 수 있습니다. 최대 개수는 50개입니다.
+                  nonRefundableCountryList:
+                    type: array
+                    items:
+                      type: string
+                    description: PARTIALLY_REFUNDABLE 환불 정책 일 때 환불이 불가능한 국가의 목록입니다.
+          description: The request was successful, and the server has returned the requested resource in the response body.
+      parameters:
+      - in: header
+        name: Content-Type
+        style: simple
+        schema:
+          type: string
+        explode: false
+        required: true
+        description: application/json
+        allowReserved: false
+      description: |-
+        `preview` `prod`
+
+        B2C 판매를 등록합니다. 판매 일정에 따라 사용자에게 공개되며 공개된 이후에는 즉시 판매가 이루어지므로 변경에 제한이 있으므로 판매 게시 일시를 신중하게 결정해야 합니다. 무료 판매인 경우에 가격을 0으로 지정하여 별도의 결제 절차 없이 사용자가 수령할 수 있게 됩니다. 판매 등록 이전에 스토어의 섹션을 미리 설정해 두어 진열 위치를 파악할 필요가 있습니다.
+
+        판매 등록 요청 전에 섹션을 먼저 설정해야 하며 1개 이상의 섹션을 설정한 후 sectionId 값을 미입력하면 첫 번째 섹션에 자동 할당됩니다.
+
+        * NEXT Market에서는 판매상품의 가격 할인 서비스를 제공하고 있습니다. 기존 판매가에 할인율을 적용하고, 할인 중인 상태를 유저에게 안내할 수 있으며 구현을 위해서는 판매상품 등록 후 NEXT Market 담당자와 협의를 통해 적용할 수 있습니다.
+      operationId: 판매등록
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - requestId
+              - itemList
+              - title
+              - description
+              - currencyType
+              - setRefundablePolicy
+              - mediaType
+              - mediaUrl
+              - limitMaxPurchasePerOnce
+              - openedAt
+              - closedAt
+              - multiCurrencyPrice
+              properties:
+                price:
+                  $ref: '#/components/schemas/BigDecimal'
+                  description: (deprecated 25.7.10) 상품의 가격을 입력하며, 무료로 증정할 상품인 경우 0을 지정합니다. 정수의 자리수는 15자리, 소수의 자리수는 10 까지 가능합니다.
+                title:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                    - lang
+                    - contents
+                    properties:
+                      lang:
+                        type: string
+                        examples:
+                        - en
+                        - ko
+                        description: 언어코드(en,ko,ja,th,zh)입니다.
+                      contents:
+                        type: string
+                        examples:
+                        - Special Limited Immortal Armor Package
+                        description: 언어코드에 해당하는 상품의 이름입니다.
+                  description: 사용자에게 노출할 판매 상품의 이름을 다국어로 지정합니다.
+                resetAt:
+                  $ref: '#/components/schemas/Timestamp'
+                  description: |-
+                    periodicType의 초기화 주기를 실행할 기준 일시를 지정합니다. Timestamp 특성상 타임존의 영향이 없으므로 목표 국가에 맞게 지정하면 됩니다. openedAt보다 같거나 이전으로 설정해야 합니다.
+
+                    example : 2025-01-01 10:00 (수요일)
+
+                    DAILY : 매일 10시에 초기화됩니다.
+
+                    WEEKLY: 매주 수요일 10시에 초기화됩니다.
+
+                    BI_WEEKLY: 격주 수요일 10시에 초기화됩니다.
+
+                    MONTHLY: 매달 1일 10시에 초기화됩니다.
+                closedAt:
+                  $ref: '#/components/schemas/Timestamp'
+                  description: 판매 종료할 시간을 지정합니다. 판매가 종료되면 해당 상품은 더 이상 노출되지 않으며, 종료 직전에 구매를 시도한 경우 판매 종료 이후에도 구매가 될 수 있습니다.
+                itemList:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                    - sku
+                    - amount
+                    properties:
+                      sku:
+                        type: string
+                        examples:
+                        - unique-armor-immortal
+                        description: 판매할 아이템의 SKU를 지정합니다.
+                      amount:
+                        type: integer
+                        examples:
+                        - 2
+                        description: 한건의 구매에서 지정한 아이템을 몇개 입수할 수 있는지 수량을 지정합니다.
+                  description: 판매할 아이템을 1개 이상 지정하여 등록하며 지정 SKU 수량만큼의 배송요청이 발생합니다.
+                mediaUrl:
+                  type: string
+                  examples:
+                  - https://cdn.store.example.com/media/processed/package_immortal_armor.jpg
+                  description: |-
+                    상품의 커버 이미지 또는 영상의 URL을 "미디어 파일 업로드" 기능을 이용해 반환받은 URL을 지정합니다.
+                    레티나, PC모드 지원을 위해 정방형 944 x 944 이상으로 등록하는 것을 권장합니다.
+                openedAt:
+                  $ref: '#/components/schemas/Timestamp'
+                  description: 판매 게시할 시간을 예약합니다. 가급적 하루 정도의 유예기간을 두어 미래 시간을 예약을 하며, 급하게 설정할 필요가 있다면 협의가 필요합니다.
+                mediaType:
+                  enum:
+                  - VIDEO
+                  - IMAGE
+                  type: string
+                  default: IMAGE
+                  examples:
+                  - IMAGE
+                  description: 상품 커버로 등록할 대상의 유형을 지정합니다. (VIDEO, IMAGE)
+                requestId:
+                  type: string
+                  examples:
+                  - sale-req-2025-001
+                  description: 요청의 유일성을 보장하기 위한 5~36자 이내의 요청키, 중복요청이 발생하지 않도록 동일 판매에 대해서는 항상 동일 요청키로 지정해야 합니다.
+                sectionId:
+                  $ref: '#/components/schemas/Long'
+                  description: 스토어에 설정한 section의 식별자를 지정하면 해당 영역에 게시됩니다. 미지정시 가장 첫 번째 섹션의 가장 첫 번째에 위치하게 됩니다.
+                periodType:
+                  enum:
+                  - DAILY
+                  - WEEKLY
+                  - BI_WEEKLY
+                  - MONTHLY
+                  type: string
+                  default: DAILY
+                  examples:
+                  - DAILY
+                  description: |-
+                    (deprecated 25.7.10) 계정당 구매 가능 수량을 기간마다 초기화할 수 있도록 제공합니다. resetAt에 기준 일시를 지정하면 해당 일시를 기준으로 설정된 기간마다 초기화가 됩니다.
+
+                    DAILY: 매일 초기화
+
+                    WEEKLY: 매주 초기화
+
+                    BI_WEEKLY: 격주 초기화
+
+                    MONTHLY: 매달 초기화
+                description:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                    - lang
+                    - contents
+                    properties:
+                      lang:
+                        type: string
+                        examples:
+                        - ko
+                        - en
+                        description: 언어코드(en,ko,ja,th,zh)입니다.
+                      contents:
+                        type: string
+                        examples:
+                        - A special limited package containing legendary immortal armor.
+                        description: 언어코드에 해당하는 상품의 설명입니다.
+                  description: 사용자에게 상품을 효과적으로 표현하고 상품의 특징을 알 수 있는 설명을 다국어로 지정합니다.
+                currencyType:
+                  type: string
+                  examples:
+                  - USD
+                  description: (deprecated 25.7.10) 상품의 가격 통화를 설정합니다. (TWD) 지원 통화는 계속 추가될 수 있습니다.
+                displayOrder:
+                  type: integer
+                  examples:
+                  - 2
+                  description: section 내에서 노출할 순서를 지정합니다. 이미 게시된 상품을 기준으로 순서를 입력값에 맞춰 조정합니다. 미지정시 가장 첫 번째에 위치하게 됩니다.
+                periodicType:
+                  enum:
+                  - DAILY
+                  - WEEKLY
+                  - BI_WEEKLY
+                  - MONTHLY
+                  type: string
+                  default: DAILY
+                  examples:
+                  - DAILY
+                  description: |-
+                    (since 25.7.10) 계정당 구매 가능 수량을 기간마다 초기화할 수 있도록 제공합니다. resetAt에 기준 일시를 지정하면 해당 일시를 기준으로 설정된 기간마다 초기화가 됩니다.
+
+                    DAILY: 매일 초기화
+
+                    WEEKLY: 매주 초기화
+
+                    BI_WEEKLY: 격주 초기화
+
+                    MONTHLY: 매달 초기화
+                limitStockAmount:
+                  $ref: '#/components/schemas/Long'
+                  description: |-
+                    총 재고의 수량을 제한할 사유가 있다면 지정합니다.
+                    수량만큼의 구매가 발생하면 매진 상태로 노출되며 더 이상 구매를 할 수 없는 상태가 됩니다.
+                    총 재고의 수량은 판매 도중이나 매진일 때에도 변경이 가능합니다.
+                    미지정시 무제한으로 설정됩니다.다.
+                limitPurchaseCount:
+                  type: integer
+                  examples:
+                  - 10
+                  description: 한 계정당 구매할 수 있는 최대 개수를 지정합니다. periodicType을 이용해 기간별 구매 제한 개수를 초기화할 수 있습니다. 미지정시 무제한 구매가 가능한 상태가 됩니다.
+                multiCurrencyPrice:
+                  type: object
+                  description: |-
+                    (since 25.7.10) 제공할 상품의 통화와 가격을 입력합니다. 정수는 15자리, 소수는 10자리까지 가능합니다.
+                    예:
+                    - USD 10$, TWD 200NT$ 판매 시 → {"USD": 10, "TWD": 200}
+                    - 무료 상품 지정 시 (제공할 통화 모두 0으로 지정) → {"USD": 0, "TWD": 0}
+                    - Map<String, BigDecimal> Type
+                setRefundablePolicy:
+                  enum:
+                  - REFUNDABLE
+                  - NON_REFUNDABLE
+                  type: string
+                  default: NON_REFUNDABLE
+                  examples:
+                  - NON_REFUNDABLE
+                  description: |-
+                    환불 유형을 선택하여 지정합니다. 환불과 관련해서는 미리 협의가 필요합니다.
+                    REFUNDABLE : 모든 국가 혹은 일부 국가 환불 가능
+                    NON_REFUNDABLE : 모든 국가 환불 불가능
+                limitMaxPurchasePerOnce:
+                  type: integer
+                  examples:
+                  - 2
+                  description: 한번의 결제로 구매할 수 있는 최대 개수를 지정합니다. 판매가격이나 상품의 특성에 따라 수량을 조절해야 사용자가 구매하는 과정에서 불필요한 오류가 발생하지 않을 수 있습니다. 최대 개수는 50개입니다.
+                nonRefundableCountryList:
+                  type: array
+                  items:
+                    type: string
+                  description: 환불 유형에 따라 환불가능(REFUNDABLE)로 설정한 경우 예외 국가를 목록으로 지정합니다.
+        required: true
+        description: ''
+  /api/v1/auth/token:
+    post:
+      summary: 스토어 인증용 원타임 토큰 요청
+      security:
+      - Authorization: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                title: 스토어인증용원타임토큰요청Ok
+                required:
+                - token
+                - expiresIn
+                properties:
+                  token:
+                    type: string
+                  expiresIn:
+                    $ref: '#/components/schemas/Timestamp'
+          description: The request was successful, and the server has returned the requested resource in the response body.
+      parameters: []
+      description: |-
+        `preview` `prod`
+
+        인게임에서 플레이 중인 사용자가 스토어에서 상품을 구매할 때 게임에서 인증된 사용자의 이동임을 증명하기 위한 토큰 발행 절차입니다. 발급 받은 token으로 이동하면 단 한번만 인증을 위해 사용하며 바로 만료 처리되어 재사용이 불가합니다. expiresIn에 지정된 유효한 일시를 초과한 경우에도 정상 인증 처리가 되지 않습니다.
+
+        발급 받은 토큰은 스토어 경로로 이동할 링크를 생성할 때 이용하여 사용자에게 링크로 제공하거나 어떤 요청에 대해 리다이렉트할 주소로 사용하여 브라우저로 이동합니다. redirectPath 에 스토어 내에 이동할 경로를 지정하면 사용자는 인증된 사용자로서 해당 경로로 redirect 됩니다.
+
+        `<a href="https://{store domain}/auth?token={one time token}" target="_blank">무료 아이템 받기</a>`
+
+        스토어를 앱 내 WebView로 제공하는 경우에는 URL param으로 inapp=true를 추가해주셔야 합니다.
+        앱 내 WebView에서 열릴 때만 한정하여 설정해야 합니다. (웹 페이지가 앱 내 WebView에서 열렸는지 식별하기 위함)
+      operationId: 스토어인증용원타임토큰요청
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - guid
+              - signature
+              - region
+              properties:
+                c2c:
+                  type: object
+                  required:
+                  - sku
+                  properties:
+                    sku:
+                      type: string
+                      description: C2C판매 등록할 아이템의 SKU 값을 지정합니다.
+                    amount:
+                      type: string
+                      description: 판매등록할 아이템의 수량입니다. 미지정시 기본값 1로 지정되며 stackable한 속성을 가진 아이템의 경우에만 지정합니다. 아이템 실링/언실링/교환 요청에서 파라미터로 전달됩니다.
+                    abilities:
+                      type: array
+                      items:
+                        type: object
+                        required:
+                        - code
+                        - value
+                        properties:
+                          code:
+                            type: string
+                            description: 능력치 설정에 입력했던 키를 지정합니다.
+                          value:
+                            $ref: '#/components/schemas/Decimal'
+                      description: 고유 속성을 가진 아이템의 경우에만 지정합니다. 구매자가 판매하는 아이템의 가치를 인식할 수 있는 속성으로 선별해 지정할 수 있습니다.
+                    serialNumber:
+                      type: string
+                      description: 고유속성을 가진 아이템의 게임 내부 식별값을 지정합니다. 아이템 실링/언실링/교환 요청에서 파라미터로 전달됩니다.
+                  description: issueType이 C2C인 경우에만 지정합니다. 이 값으로 판매자와 구매자에게 표시할 정보를 게시합니다.
+                guid:
+                  type: string
+                  description: 120자 이하
+                region:
+                  type: string
+                  description: |-
+                    플레이 중인 사용자의 소속 국가 정보, 접속한 스토어의 표현을 소속 국가에 맞춰서 노출. Sanction 국가는 실패하게 됩니다
+                    ISO3166-1 alpha-2 (KR, JP, US, TW, TH, ...)
+                payload:
+                  type: string
+                  description: |-
+                    `preview `
+                    2000자 미만의 자유형식의 text를 지정하며 배송 요청 때 해당 payload값이 같이 전달됩니다.
+                presence:
+                  type: string
+                  description: |-
+                    since 25/11/12 인증하려는 사용자의 현재 인게임 세션의 위치를 지정합니다.
+                    숫자 또는 문자열로 50자 이내로 지정하며 사용자에게 직접 노출되지 않는 값입니다.
+                    미지정하는 경우 presence의 기본값은 0이며 C2C 거래에서 상호 거래 가능한 그룹을 설정하기 위한 그룹에 포함되어 있어야 거래가 가능합니다.
+                issueType:
+                  type: string
+                  description: |-
+                    특별한 목적으로 토큰을 발행하는 경우에 지정합니다. issueType이 지정된 경우 redirectPath 입력은 무시됩니다.
+
+                    C2C: C2C판매 등록을 위한 목적이며 해당 토큰으로 인증절차를 거치면 사용자는 C2C 등록 페이지로 이동합니다.
+                signature:
+                  type: array
+                  items:
+                    type: string
+                redirectPath:
+                  type: string
+                  description: |-
+                    인증된 사용자가 이동할 페이지의 경로를 지정합니다. ex)/c2c/selling?key=param
+                    지정하지 않으면 홈으로 이동합니다.
+                referralCode:
+                  type: string
+                  description: |-
+                    preview 게임측에서 정의한 사용자의 추천코드를 지정합니다. KOL 또는 추천인의 추천코드로 100자 미만의 값으로 지정합니다.
+                    최신 값으로 항상 갱신되므로 추천인 취소, 변경시 빈값으로 입력하거나 다른 값으로 지정하여 취소 또는 변경할 수 있습니다.
+                    null 또는 필드 미지정시 변경되지 않거나 무시합니다.
+        required: true
+        description: ''
+  /api/v1/item/{sku}:
+    get:
+      tags:
+      - item
+      summary: 아이템 조회
+      security:
+      - Authorization: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                title: 아이템조회Ok
+                required:
+                - sku
+                - imageUrl
+                - name
+                - description
+                properties:
+                  sku:
+                    type: string
+                    examples:
+                    - unique-armor-immortal
+                    description: 조회한 SKU를 반환합니다.
+                  name:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                      - lang
+                      - contents
+                      properties:
+                        lang:
+                          type: string
+                          examples:
+                          - en
+                          - ko
+                          description: |-
+                            ISO 639-1로 지정.
+                            예) ko, en, zh, th, ja.
+                        contents:
+                          type: string
+                          examples:
+                          - Immortal Unique Armor
+                          description: 해당 언어로 표시할 이름입니다. 미지정시 기본 언어 또는 첫 번째 항목으로 대체됩니다.
+                    description: 재화의 다국어 명칭
+                  imageUrl:
+                    type: string
+                    examples:
+                    - https://cdn.store.example.com/media/processed/armor_001.jpg
+                    description: 등록한 이미지의 URL을 반환합니다.
+                  policies:
+                    type: object
+                    required: []
+                    properties:
+                      minPrice:
+                        type: array
+                        items:
+                          type: object
+                          required:
+                          - price
+                          - currency
+                          properties:
+                            price:
+                              type: number
+                              format: double
+                              examples:
+                              - 10
+                              description: currency 기준 최소 금액을 지정합니다. Decimal Type 입니다.
+                            currency:
+                              type: string
+                              examples:
+                              - USD
+                              description: 최소금액을 지정할 화폐 유형을 지정합니다. ex) TWD, USD, USDT
+                        description: C2C 최소 판매가를 제한하는 정책을 추가할 수 있습니다.
+                      blackList:
+                        type: array
+                        items:
+                          type: string
+                        description: 아이템 판매, 구매, 노출 등을 허용하지 않을 국가를 지정합니다. 미지정시 사용할 수 없으며 whiteList와 혼용할 수 없습니다.
+                      whiteList:
+                        type: array
+                        items:
+                          type: string
+                        description: 아이템 판매, 구매, 노출 등을 허용할 국가를 지정합니다. 미지정시 전체 허용이며 blackList와 혼용할 수 없습니다.
+                    description: 아이템에 세부 정책을 추가할 수 있습니다.
+                  abilities:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                      - name
+                      - optionType
+                      - unitType
+                      - value
+                      properties:
+                        name:
+                          type: array
+                          items:
+                            type: object
+                            required:
+                            - lang
+                            - contents
+                            properties:
+                              lang:
+                                type: string
+                                examples:
+                                - en
+                                description: 언어 코드 ex) en, ko, zh, ja, th
+                              contents:
+                                type: string
+                                examples:
+                                - speed
+                                description: 언어 코드에 해당하는 이름을 지정합니다.
+                          description: 능력치의 이름을 지정합니다.
+                        value:
+                          type: number
+                          format: double
+                          examples:
+                          - 10
+                          description: 표시할 기본 능력 수치를 지정합니다. Decimal Type 입니다.
+                        unitType:
+                          enum:
+                          - NONE
+                          - PERCENTAGE
+                          - NUMERIC
+                          - LEVEL
+                          type: string
+                          default: NONE
+                          examples:
+                          - PERCENTAGE
+                          description: |-
+                            능력치를 어떤 형식으로 표현할지를 결정하여 지정합니다.
+
+                            NONE: 입력한 수치 그대로 노출
+
+                            PERCENTAGE: 100% 형식의 표시
+
+                            NUMERIC: +100 형식으로 표시
+
+                            LEVEL: 100Lv 형식으로 표시
+
+
+                            예시는 abilities.value의 값을 100으로 지정했을 때 형식입니다.
+                        optionType:
+                          enum:
+                          - BASIC
+                          - CONTRAINT
+                          - AMOUNT
+                          type: string
+                          default: BASIC
+                          examples:
+                          - BASIC
+                          description: "능력치의 옵션 분류를 지정합니다. 옵션 분류에 따라 표기 위치가 달라집니다.\n\nBASIC: 기본 능력치\n\nCONTRAINT: 제약 옵션 \n\n예) 레벨제한\n\nAMOUNT: 아이템에 포함된 수량"
+                    description: 아이템이 가지는 기본 능력치를 지정합니다. 소모성 아이템의 경우는 지정할 필요없으며 변형되지 않은 아이템의 기본 능력치로서 표시됩니다.
+                  description:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                      - lang
+                      - contents
+                      properties:
+                        lang:
+                          type: string
+                        contents:
+                          type: string
+                          examples:
+                          - A unique armor imbued with legendary immortal power.
+                          description: 언어 코드에 해당하는 문자열을 지정합니다.
+                    description: 사용자에게 표시할 재화에 대한 설명을 다국어로 지정합니다.
+                  subItemList:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                      - sku
+                      - amount
+                      - name
+                      properties:
+                        sku:
+                          type: string
+                          examples:
+                          - subItem
+                          description: 패키지에 포함된 품목의 SKU입니다.
+                        name:
+                          type: array
+                          items:
+                            type: object
+                            required:
+                            - lang
+                            - contents
+                            properties:
+                              lang:
+                                type: string
+                              contents:
+                                type: string
+                        amount:
+                          type: integer
+                          examples:
+                          - 10
+                          description: 해당 SKU의 수량입니다.
+                        description:
+                          type: array
+                          items:
+                            type: object
+                            required:
+                            - lang
+                            - contents
+                            properties:
+                              lang:
+                                type: string
+                              contents:
+                                type: string
+                    description: 패키지 형태로 등록된 경우 반환합니다.
+          description: The request was successful, and the server has returned the requested resource in the response body.
+      parameters:
+      - $ref: '#/components/parameters/sku'
+      description: |+
+        `preview` `prod`
+
+        이미 등록된 아이템의 정보를 조회합니다.
+
+      operationId: 아이템조회
+    put:
+      tags:
+      - item
+      summary: 아이템 변경
+      security:
+      - Authorization: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: 'null'
+                title: 아이템변경Ok
+          description: <응답 본문이 비어있습니다.>
+      parameters:
+      - $ref: '#/components/parameters/sku'
+      description: |-
+        `preview` `prod`
+
+        이미 등록된 아이템의 세부 변경사항이 있다면 서비스 중에도 수정할 수 있습니다. 아이템의 이름과 설명, 이미지를 변경할 수 있으며 패키지 유형의 아이템의 경우 이미 판매된 아이템에 대한 소급이 불가하므로 수정할 수 없으므로 새로운 SKU를 추가하는 것으로 권고합니다.
+      operationId: 아이템변경
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - imageUrl
+              - name
+              - description
+              properties:
+                name:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                    - contents
+                    - lang
+                    properties:
+                      lang:
+                        type: string
+                        examples:
+                        - en
+                        description: |-
+                          ISO 639-1로 지정.
+                          예) ko, en, zh, th, ja.
+                      contents:
+                        type: string
+                        examples:
+                        - Legendary Immortal Armor
+                        description: 해당 언어로 표시할 이름입니다. 미지정시 기본 언어 또는 첫 번째 항목으로 대체됩니다.
+                  description: 사용자에게 표시할 재화명을 다국어로 지정합니다.
+                imageUrl:
+                  type: string
+                  examples:
+                  - https://cdn.store.example.com/media/processed/armor_002.jpg
+                  description: 미디어 파일 업로드를 통해 반환받은 URL을 지정합니다. 정방형 최소 128x128 크기의 이미지를 권장합니다.
+                policies:
+                  type: object
+                  required: []
+                  properties:
+                    minPrice:
+                      type: array
+                      items:
+                        type: object
+                        required:
+                        - price
+                        - currency
+                        properties:
+                          price:
+                            type: number
+                            format: double
+                            examples:
+                            - 10
+                            description: |
+                              currency 기준 최소 금액을 지정합니다. Decimal Type 입니다.
+                          currency:
+                            type: string
+                            examples:
+                            - USD
+                            description: 최소금액을 지정할 화폐 유형을 지정합니다. ex) TWD, USD, USDT
+                      description: C2C 최소 판매가를 제한하는 정책을 추가할 수 있습니다.
+                    blackList:
+                      type: array
+                      items:
+                        type: string
+                      description: 아이템 판매, 구매, 노출 등을 허용하지 않을 국가를 지정합니다. 미지정시 사용할 수 없으며 whiteList와 혼용할 수 없습니다.
+                    whiteList:
+                      type: array
+                      items:
+                        type: string
+                      description: 아이템 판매, 구매, 노출 등을 허용할 국가를 지정합니다. 미지정시 전체 허용이며 blackList와 혼용할 수 없습니다.
+                  description: 아이템에 세부 정책을 추가할 수 있습니다.
+                abilities:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                    - name
+                    - optionType
+                    - unitType
+                    - value
+                    properties:
+                      name:
+                        type: array
+                        items:
+                          type: object
+                          required:
+                          - lang
+                          - contents
+                          properties:
+                            lang:
+                              type: string
+                              examples:
+                              - en
+                              description: 언어 코드 ex) en, ko, zh, ja, th
+                            contents:
+                              type: string
+                              examples:
+                              - speed
+                              description: 언어 코드에 해당하는 이름을 지정합니다.
+                        description: 능력치의 이름을 지정합니다.
+                      value:
+                        $ref: '#/components/schemas/Decimal'
+                      unitType:
+                        enum:
+                        - NONE
+                        - PERCENTAGE
+                        - NUMERIC
+                        - LEVEL
+                        type: string
+                        default: NONE
+                        examples:
+                        - PERCENTAGE
+                        description: |-
+                          능력치를 어떤 형식으로 표현할지를 결정하여 지정합니다.
+
+                          NONE: 입력한 수치 그대로 노출
+
+                          PERCENTAGE: 100% 형식의 표시
+
+                          NUMERIC: +100 형식으로 표시
+
+                          LEVEL: 100Lv 형식으로 표시
+
+
+                          예시는 abilities.value의 값을 100으로 지정했을 때 형식입니다.
+                      optionType:
+                        enum:
+                        - BASIC
+                        - CONTRAINT
+                        - AMOUNT
+                        type: string
+                        default: BASIC
+                        examples:
+                        - BASIC
+                        description: "능력치의 옵션 분류를 지정합니다. 옵션 분류에 따라 표기 위치가 달라집니다.\n\nBASIC: 기본 능력치\n\nCONTRAINT: 제약 옵션 \n\n예) 레벨제한\n\nAMOUNT: 아이템에 포함된 수량"
+                  description: 아이템이 가지는 기본 능력치를 지정합니다. 소모성 아이템의 경우는 지정할 필요없으며 변형되지 않은 아이템의 기본 능력치로서 표시됩니다.
+                description:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                    - lang
+                    - contents
+                    properties:
+                      lang:
+                        type: string
+                        examples:
+                        - ko
+                        - en
+                        - zh
+                        description: |-
+                          ISO 639-1로 지정.
+                          예) ko, en, zh, th, ja.
+                      contents:
+                        type: string
+                        examples:
+                        - Enhanced legendary armor imbued with immortal power.
+                        description: 언어 코드에 해당하는 문자열을 지정합니다.
+                  description: 사용자에게 표시할 재화에 대한 설명을 다국어로 지정합니다.
+                subItemList:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                    - sku
+                    - amount
+                    properties:
+                      sku:
+                        type: string
+                        examples:
+                        - subItem
+                        description: 아이템 패키지 구성 상품의 SKU
+                      amount:
+                        type: integer
+                        examples:
+                        - 20
+                        description: 아이템 패키지 구성 상품의 수량
+                  description: 아이템 패키지 상품의 구성을 수정합니다.
+        required: true
+        description: ''
+  /api/v1/settlement:
+    get:
+      tags:
+      - settlement
+      summary: 매출 데이터 조회
+      security:
+      - Authorization: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                title: 매출데이터조회Ok
+                required:
+                - pageNumber
+                - first
+                - last
+                - totalElements
+                - content
+                properties:
+                  last:
+                    type: boolean
+                    description: 마지막 페이지 여부
+                  first:
+                    type: boolean
+                    description: 첫 번째 페이지 여부
+                  content:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                      - orderId
+                      - transactionType
+                      - saleType
+                      - buyer
+                      - items
+                      - paymentCurrencyType
+                      - quantity
+                      - paymentPrice
+                      - productPrice
+                      - settlementPrice
+                      - platformFeeAmount
+                      - corpRsAmount
+                      - capturedAt
+                      - settledAt
+                      properties:
+                        buyer:
+                          type: object
+                          required:
+                          - guid
+                          - countryCode
+                          properties:
+                            guid:
+                              type: string
+                              description: 구매자의 guid
+                            countryCode:
+                              type: string
+                              examples:
+                              - KR
+                              description: |-
+                                구매자의 국가 정보.
+                                ISO3166-1 alpha-2 (KR, JP, US, TW, TH, ...)
+                          description: 구매자에 대한 정보
+                        items:
+                          type: array
+                          items:
+                            type: object
+                            required:
+                            - id
+                            - name
+                            - skus
+                            - quantity
+                            properties:
+                              id:
+                                type: string
+                                description: 판매된 상품의 고유 아이디
+                              name:
+                                type: string
+                                description: 판매된 상품의 이름, b2c인 경우 판매 상품의 타이틀, c2c인 경우 판매 아이템의 이름
+                              skus:
+                                type: string
+                                description: 판매된 상품에 포함된 아이템 sku 값의 조합 , 으로 join된 String값 ex) 3223,3343
+                              quantity:
+                                type: string
+                                description: 판매된 상품의 수량
+                          description: 거래된 판매 상품 목록
+                        seller:
+                          type: object
+                          required:
+                          - guid
+                          - countryCode
+                          properties:
+                            guid:
+                              type: string
+                              description: 판매자의 guid
+                            countryCode:
+                              type: string
+                              examples:
+                              - JP
+                              description: |-
+                                판매자의 국가 정보.
+                                ISO3166-1 alpha-2 (KR, JP, US, TW, TH, ...)
+                          description: |-
+                            판매자에 대한 정보.
+                            C2C 건에 대해서만 존재합니다.
+                        orderId:
+                          type: string
+                          description: 주문 ID. uuid 형식을 따릅니다.
+                        quantity:
+                          type: integer
+                          description: 결제된 아이템 수량
+                        saleType:
+                          enum:
+                          - B2C
+                          - C2C
+                          type: string
+                          default: B2C
+                          examples:
+                          - B2C
+                          description: 해당 정산 건의 상품 type.(B2C, C2C)
+                        settledAt:
+                          $ref: '#/components/schemas/Timestamp'
+                          description: |-
+                            정산 기준 시간.
+                            milliseconds 단위 UNIX Timestamp
+                        capturedAt:
+                          $ref: '#/components/schemas/Timestamp'
+                          description: |-
+                            결제 시간.
+                            milliseconds 단위 UNIX Timestamp
+                        refundedAt:
+                          $ref: '#/components/schemas/Timestamp'
+                          description: |-
+                            환불 시간.
+                            milliseconds 단위 UNIX Timestamp
+                        corpRsAmount:
+                          $ref: '#/components/schemas/Price'
+                          description: 법인 수익 정보
+                        paymentPrice:
+                          $ref: '#/components/schemas/Price'
+                          description: 결제 금액 정보
+                        productPrice:
+                          $ref: '#/components/schemas/Price'
+                          description: 상품 금액 정보
+                        valueAddedTax:
+                          type: string
+                          description: VAT 금액 정보
+                        withholdingTax:
+                          type: string
+                          description: 원천징수세 정보
+                        settlementPrice:
+                          $ref: '#/components/schemas/Price'
+                          description: 정산 대상 금액 정보
+                        transactionType:
+                          enum:
+                          - PAYMENT
+                          - REFUND
+                          - CHARGE_BACK
+                          type: string
+                          default: PAYMENT
+                          examples:
+                          - PAYMENT
+                          description: |-
+                            해당 정산 건의 결제 type.
+                            PAYMENT: 구매
+                            REFUND: 환불
+                            CHARGE_BACK: 차지백
+                        platformFeeAmount:
+                          $ref: '#/components/schemas/Price'
+                          description: 플랫폼 수수료 정보
+                        paymentCurrencyType:
+                          type: string
+                          description: |-
+                            결제된 화폐 유형.
+                            ex) TWD, USD, USDT
+                        sellerProfitAndLoss:
+                          $ref: '#/components/schemas/Price'
+                          description: C2C 판매 시, 판매자의 수익 정보
+                    description: 매출 목록
+                  pageNumber:
+                    type: integer
+                    description: 현재 페이지
+                  totalElements:
+                    $ref: '#/components/schemas/Long'
+                    description: 조회된 총 목록 수
+          description: The request was successful, and the server has returned the requested resource in the response body.
+      parameters:
+      - in: header
+        name: Content-Type
+        style: simple
+        schema:
+          type: string
+        explode: false
+        required: true
+        description: application/json
+        allowReserved: false
+      - in: query
+        name: endDate
+        style: form
+        schema:
+          $ref: '#/components/schemas/Long'
+          type: number
+          items:
+            $ref: '#/components/schemas/Long'
+          description: |-
+            조회하고자 하는 시작 일시를 지정합니다.
+            milliseconds 단위 UNIX timestamp
+        explode: true
+        required: true
+        description: |-
+          조회하고자 하는 종료 시간.
+          milliseconds 단위 UNIX Timestamp
+        allowReserved: false
+      - in: query
+        name: startDate
+        style: form
+        schema:
+          $ref: '#/components/schemas/Long'
+          type: number
+          items:
+            $ref: '#/components/schemas/Long'
+          description: |-
+            조회하고자 하는 시작 일시를 지정합니다.
+            milliseconds 단위 UNIX timestamp
+        explode: true
+        required: true
+        description: |-
+          조회하고자 하는 시작 시간.
+          milliseconds 단위 UNIX Timestamp
+        allowReserved: false
+      - in: query
+        name: page
+        style: form
+        schema:
+          type: integer
+        explode: true
+        required: false
+        description: |-
+          페이지 번호
+          기본값은 0이며 0부터 시작합니다.
+        allowReserved: false
+      - in: query
+        name: size
+        style: form
+        schema:
+          type: integer
+        explode: true
+        required: false
+        description: |-
+          한 페이지의 표시할 목록수.
+          기본값은 50이며 최대 1000까지 조회 가능합니다.
+        allowReserved: false
+      description: |-
+        `prod`
+
+        기간을 설정하여 매출 데이터를 조회합니다.
+      operationId: 매출데이터조회
+  /api/v1/server/time:
+    post:
+      summary: 서버 시간 체크
+      security:
+      - Authorization: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                title: 서버시간체크Ok
+                required:
+                - timestamp
+                properties:
+                  timestamp:
+                    $ref: '#/components/schemas/Long'
+          description: The request was successful, and the server has returned the requested resource in the response body.
+      parameters:
+      - in: header
+        name: Content-Type
+        style: simple
+        schema:
+          type: string
+        explode: false
+        required: true
+        description: application/json
+        allowReserved: false
+      description: "`preview` `prod` \n\nAPI의 정상성 체크와 함께 스토어의 서버 시간을 조회합니다."
+      operationId: 서버시간체크
+  /api/v1/item/ability:
+    get:
+      tags:
+      - item
+      summary: 아이템 능력 설정 목록 조회
+      security:
+      - Authorization: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                title: 아이템능력설정목록조회Ok
+                required:
+                - pageNumber
+                - totalElements
+                - content
+                - last
+                properties:
+                  last:
+                    type: boolean
+                    examples:
+                    - true
+                    - false
+                    description: 마지막 페이지 유무를 반환합니다.
+                  content:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                      - code
+                      - optionType
+                      - unitType
+                      - color
+                      - name
+                      properties:
+                        code:
+                          type: string
+                          examples:
+                          - attack-power-boost
+                          - defense-enhancement
+                          description: 게임측에서 능력치를 식별하고 전달하기 용이한 코드를 3~36자 사이로 지정합니다.
+                        name:
+                          type: array
+                          items:
+                            type: object
+                            required:
+                            - lang
+                            - contents
+                            properties:
+                              lang:
+                                type: string
+                                examples:
+                                - en
+                                - ko
+                                description: 언어 코드 ex) en, ko, zh, ja, th
+                              contents:
+                                type: string
+                                examples:
+                                - Major Attack Power Boost
+                                - Major Defense Enhancement
+                                description: 언어 코드에 해당하는 이름을 지정합니다.
+                          description: 능력치의 이름을 지정합니다.
+                        color:
+                          enum:
+                          - NONE
+                          - YELLOW
+                          - GREEN
+                          - BLUE
+                          - MAGENTA
+                          - ORANGE
+                          - RED
+                          - GREY
+                          type: string
+                          default: NONE
+                          examples:
+                          - YELLOW
+                          - GREEN
+                          - MAGENTA
+                          description: |-
+                            능력치를 표기할 때 표시할 색상을 지정합니다. 테마에 따라 지정한 색상을 명도와 채도를 조절하여 표시하며 가능하면 게임내 표기하는 색상을 지정하는 것이 유리합니다.
+                            지정가능한 색상: YELLOW, GREEN, BLUE, MAGENTA, ORANGE, RED,GREY, NONE
+                            (NONE은 따로 색깔은 지정하지 않음을 뜻하고 기본색상으로 표현됩니다.)
+                        unitType:
+                          enum:
+                          - NONE
+                          - PERCENTAGE
+                          - NUMERIC
+                          - LEVEL
+                          type: string
+                          examples:
+                          - LEVEL
+                          description: |-
+                            능력치를 어떤 형식으로 표현할지를 결정하여 지정합니다.
+
+                            NONE: 입력한 수치 그대로 노출
+
+                            PERCENTAGE: 100% 형식의 표시
+
+                            NUMERIC: +100 형식으로 표시
+
+                            LEVEL: 100Lv 형식으로 표시
+
+
+                            예시는 abilities.value의 값을 100으로 지정했을 때 형식입니다.
+                        optionType:
+                          enum:
+                          - BASIC
+                          - ENHANCE
+                          - ADDITIONAL
+                          - SMELTING
+                          - CONSTRAINT
+                          type: string
+                          default: BASIC
+                          examples:
+                          - ENHANCE
+                          description: |-
+                            능력치의 옵션 분류를 지정합니다. 각 옵션 분류마다 사용자에게 표시되는 위치가 달라집니다.
+
+                            BASIC: 기본 능력치 변경 사항
+
+                            ENHANCE: 강화를 통해 변경된 능력 (강화 옵션으로 표기)
+
+                            ADDITIONAL: 감정이나 소켓팅을 통해 변경된 능력 (추가 옵션으로 표기)
+
+                            SMELTING: 제련이나 속성 부여를 통해 변경된 능력 (제련 옵션으로 표기)
+
+                            CONSTRAINT: 변화에 의해 추가되거나 변경된 제약 조건 (제약 옵션으로 표기)
+                    description: 등록된 설정이 없으면 빈 목록을 반환합니다.
+                  pageNumber:
+                    type: integer
+                    examples:
+                    - 1
+                    - 2
+                    - 0
+                    description: 현재 페이지의 번호를 반환합니다.
+                  totalElements:
+                    type: integer
+                    format: int64
+                    examples:
+                    - 20
+                    description: 등록된 능력치 설정 목록의 수량을 반환합니다.
+          description: The request was successful, and the server has returned the requested resource in the response body.
+      parameters:
+      - in: query
+        name: page
+        style: form
+        schema:
+          type: integer
+        explode: true
+        required: false
+        description: 0부터 시작하는 페이지의 번호입니다.
+        allowReserved: false
+      - in: query
+        name: size
+        style: form
+        schema:
+          type: integer
+        explode: true
+        required: false
+        description: 페이지의 크기를 지정합니다. 최대 100까지 지정 가능합니다.
+        allowReserved: false
+      - in: header
+        name: Content-Type
+        style: simple
+        schema:
+          type: string
+        explode: false
+        required: true
+        description: application/json
+        allowReserved: false
+      operationId: 아이템능력설정목록조회
+    post:
+      tags:
+      - item
+      summary: 아이템 능력 설정 등록
+      security:
+      - Authorization: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: 'null'
+                title: 아이템능력설정등록Ok
+          description: <응답 본문이 비어있습니다.>
+      parameters: []
+      description: |-
+        `preview` `prod`
+
+        아이템들이 감정, 제련, 강화, 소켓팅 등을 통해 변화하는 능력치를 등록합니다. 능력치 등록에서 사용하는 코드값은 C2C 판매 등록 과정에서 이용하여 판매할 아이템의 고유한 능력치를 표시하고 가치를 판단하는 근거로 사용됩니다.
+      operationId: 아이템능력설정등록
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - keys
+              properties:
+                keys:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                    - code
+                    - optionType
+                    - unitType
+                    - color
+                    - name
+                    properties:
+                      code:
+                        type: string
+                        examples:
+                        - attack-power-boost
+                        - defense-enhancement
+                        description: 게임측에서 능력치를 식별하고 전달하기 용이한 코드를 3~36자 사이로 지정합니다.
+                      name:
+                        type: array
+                        items:
+                          type: object
+                          required:
+                          - lang
+                          - contents
+                          properties:
+                            lang:
+                              type: string
+                              examples:
+                              - ko
+                              - en
+                              description: 언어 코드 ex) en, ko, zh, ja, th
+                            contents:
+                              type: string
+                              examples:
+                              - Defense Enhancement
+                              - Attack Power Boost
+                              description: 언어 코드에 해당하는 이름을 지정합니다.
+                        description: 능력치의 이름을 지정합니다.
+                      color:
+                        enum:
+                        - NONE
+                        - YELLOW
+                        - GREEN
+                        - BLUE
+                        - MAGENTA
+                        - ORANGE
+                        - RED
+                        - GREY
+                        type: string
+                        default: NONE
+                        examples:
+                        - BLUE
+                        - YELLOW
+                        description: |-
+                          능력치를 표기할 때 표시할 색상을 지정합니다. 테마에 따라 지정한 색상을 명도와 채도를 조절하여 표시하며 가능하면 게임내 표기하는 색상을 지정하는 것이 유리합니다.
+
+                          지정가능한 색상: YELLOW, GREEN, BLUE, MAGENTA, ORANGE, RED, GREY, NONE
+                          (NONE은 따로 색깔은 지정하지 않음을 뜻하고 기본색상으로 표현됩니다.)
+                      unitType:
+                        enum:
+                        - NONE
+                        - PERCENTAGE
+                        - NUMERIC
+                        - LEVEL
+                        type: string
+                        default: NONE
+                        examples:
+                        - PERCENTAGE
+                        description: |-
+                          능력치를 어떤 형식으로 표현할지를 결정하여 지정합니다.
+
+                          NONE: 입력한 수치 그대로 노출
+
+                          PERCENTAGE: 100% 형식의 표시
+
+                          NUMERIC: +100 형식으로 표시
+
+                          LEVEL: 100Lv 형식으로 표시
+
+
+                          예시는 abilities.value의 값을 100으로 지정했을 때 형식입니다.
+                      optionType:
+                        enum:
+                        - BASIC
+                        - ENHANCE
+                        - ADDITIONAL
+                        - SMELTING
+                        - CONSTRAINT
+                        - AMOUNT
+                        type: string
+                        default: BASIC
+                        examples:
+                        - BASIC
+                        description: |-
+                          능력치의 옵션 분류를 지정합니다. 각 옵션 분류마다 사용자에게 표시되는 위치가 달라집니다.
+
+                          BASIC: 기본 능력치 변경 사항
+
+                          ENHANCE: 강화를 통해 변경된 능력 (강화 옵션으로 표기)
+
+                          ADDITIONAL: 감정이나 소켓팅을 통해 변경된 능력 (추가 옵션으로 표기)
+
+                          SMELTING: 제련이나 속성 부여를 통해 변경된 능력 (제련 옵션으로 표기)
+
+                          CONSTRAINT: 변화에 의해 추가되거나 변경된 제약 조건 (제약 옵션으로 표기)
+
+                          AMOUNT: 아이템에 내포한 수량을 표현하기 위한 값 (수량으로 표기)
+                  description: 등록할 능력치의 키 목록 입니다.
+        required: true
+        description: ''
+  /api/v1/media/upload:
+    post:
+      tags:
+      - item
+      summary: 미디어 파일 업로드
+      security:
+      - Authorization: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                title: 미디어파일업로드Ok
+                required:
+                - url
+                properties:
+                  url:
+                    type: string
+                    examples:
+                    - https://cdn.store.example.com/media/processed/image_123456.jpg
+                    description: 재처리된 media 파일의 URL이 반환되며 바로 확인이 가능.
+          description: 미디어 파일 업로드 성공
+      parameters:
+      - in: header
+        name: Content-Type
+        style: simple
+        schema:
+          type: string
+        explode: false
+        required: true
+        description: multipart/form-data
+        allowReserved: false
+      description: 다수의 디스플레이를 위한 반응형 표현을 위해 이미지와 동영상은 재처리를 하게 됩니다. API를 이용하는 모든 imageUrl, mediaUrl 등에서 입력은 미디어 파일 업로드 API를 통해 반환받은 미디어 URL을 지정해 주세요.
+      operationId: 미디어파일업로드
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+              - file
+              - fileType
+              properties:
+                file:
+                  $ref: '#/components/schemas/File'
+                fileType:
+                  enum:
+                  - IMAGE
+                  - VIDEO
+                  type: string
+                  default: IMAGE
+                  description: IMAGE 또는 VIDEO로 지정합니다.
+        required: true
+        description: IMAGE 또는 VIDEO로 지정합니다.
+  /api/v1/sale/b2c/section:
+    get:
+      tags:
+      - section
+      summary: 섹션 목록 조회
+      security:
+      - Authorization: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  required:
+                  - id
+                  - title
+                  - iconImageUrl
+                  - displayOrder
+                  - active
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                      examples:
+                      - 1
+                      - 2
+                      description: 등록된 섹션의 식별자로 추후 섹션 정보 변경의 파라미터로 사용할 수 있습니다.
+                    title:
+                      type: array
+                      items:
+                        type: object
+                        required:
+                        - lang
+                        - contents
+                        properties:
+                          lang:
+                            type: string
+                            examples:
+                            - ko
+                            - en
+                            description: 언어코드(en,ko,ja,th,zh)입니다.
+                          contents:
+                            type: string
+                            examples:
+                            - Armor
+                            - Weapons
+                            - Premium Weapons
+                            description: 언어코드에 해당하는 섹션의 이름입니다.
+                      description: 등록된 섹션의 다국어 처리된 제목입니다.
+                    active:
+                      type: boolean
+                      examples:
+                      - true
+                      - false
+                      description: 등록된 섹션의 활성화 상태입니다.
+                    displayOrder:
+                      type: integer
+                      examples:
+                      - 1
+                      - 2
+                      description: 등록된 섹션의 노출 순서입니다. 동일한 displayOrder일 경우 최근 생성된 섹션이 먼저 노출됩니다.
+                    iconImageUrl:
+                      type: string
+                      examples:
+                      - https://cdn.store.example.com/media/processed/section_premium_weapon.jpg
+                      description: 등록된 섹션의 아이콘 이미지 URL 입니다.
+                title: 섹션목록조회Ok
+                description: 등록된 섹션들의 정보입니다.
+          description: The request was successful, and the server has returned the requested resource in the response body.
+      parameters:
+      - in: header
+        name: Content-Type
+        style: simple
+        schema:
+          type: string
+        explode: false
+        required: true
+        description: application/json
+        allowReserved: false
+      operationId: 섹션목록조회
+    post:
+      tags:
+      - section
+      summary: 섹션 등록
+      security:
+      - Authorization: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  required:
+                  - id
+                  - title
+                  - iconImageUrl
+                  - displayOrder
+                  - active
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                      examples:
+                      - 1
+                      - 2
+                      description: 등록된 섹션의 식별자로 추후 섹션 정보 변경의 파라미터로 사용할 수 있습니다.
+                    title:
+                      type: array
+                      items:
+                        type: object
+                        required:
+                        - lang
+                        - contents
+                        properties:
+                          lang:
+                            type: string
+                            examples:
+                            - ko
+                            - en
+                            description: |-
+                              ISO 639-1로 지정합니다.
+                              예) ko, en, zh, th, ja
+                          contents:
+                            type: string
+                            examples:
+                            - Weapons
+                            - Armor
+                            description: 언어코드에 해당하는 섹션의 이름입니다.
+                      description: 등록된 섹션의 다국어 처리된 제목입니다.
+                    active:
+                      type: boolean
+                      examples:
+                      - true
+                      - false
+                      description: 등록된 섹션의 활성화 상태입니다.
+                    displayOrder:
+                      type: integer
+                      examples:
+                      - 1
+                      - 2
+                      description: 등록된 섹션의 노출 순서입니다. 동일한 displayOrder일 경우 최근 생성된 섹션이 먼저 노출됩니다.
+                    iconImageUrl:
+                      type: string
+                      examples:
+                      - https://cdn.store.example.com/media/processed/section_weapon.jpg
+                      - https://cdn.store.example.com/media/processed/section_armor.jpg
+                      description: |+
+                        등록된 섹션의 아이콘 이미지 URL 입니다.
+
+                title: 섹션등록Ok
+                description: 등록된 섹션들의 정보입니다.
+          description: The request was successful, and the server has returned the requested resource in the response body.
+      parameters: []
+      description: |-
+        `preview` `prod`
+
+        B2C 상품을 진열할 섹션 리스트를 요청합니다. 안정적인 UI 를 위해 섹션 개수는 4개로 제한합니다.
+      operationId: 섹션등록
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                required:
+                - title
+                - iconImageUrl
+                - displayOrder
+                properties:
+                  title:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                      - lang
+                      - contents
+                      properties:
+                        lang:
+                          type: string
+                          examples:
+                          - ko
+                          - en
+                          description: |-
+                            [ISO 639-1](https://localizely.com/iso-639-1-list/)로 지정합니다.
+                            예) ko, en, zh, th, ja
+                        contents:
+                          type: string
+                          examples:
+                          - Weapons
+                          - Armor
+                          description: 언어코드에 해당하는 섹션의 이름
+                    description: 사용자에게 노출할 섹션의 제목을 다국어로 지정합니다.
+                  displayOrder:
+                    type: integer
+                    examples:
+                    - 1
+                    - 2
+                    description: 섹션이 노출될 순서를 지정합니다. 동일한 displayOrder일 경우 최근 생성된 섹션이 먼저 노출됩니다.
+                  iconImageUrl:
+                    type: string
+                    examples:
+                    - https://obs.store.example.com/media/processed/section_armor.jpg
+                    description: 섹션의 아이콘 이미지 URL을 "미디어 파일 업로드" 기능을 이용해 반환받은 URL을 지정합니다.
+              description: 요청할 섹션의 정보 리스트 입니다.
+        required: true
+        description: ''
+  /api/v1/incentive/mission:
+    get:
+      tags:
+      - mission
+      summary: 미션 보드 조회
+      security:
+      - Authorization: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                title: 미션보드조회Ok
+                required:
+                - pageNumber
+                - last
+                - totalElements
+                - content
+                properties:
+                  last:
+                    type: boolean
+                    examples:
+                    - true
+                    - false
+                    description: 마지막 페이지 여부
+                  content:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                      - eventKey
+                      - name
+                      - description
+                      - startedAt
+                      - endedAt
+                      - achievement
+                      - status
+                      - missionType
+                      properties:
+                        name:
+                          type: array
+                          items:
+                            type: object
+                            required:
+                            - lang
+                            - contents
+                            properties:
+                              lang:
+                                type: string
+                                examples:
+                                - en
+                                description: 언어코드(en,ko,ja,th,zh)입니다.
+                              contents:
+                                type: string
+                                examples:
+                                - level up
+                                description: 사용자에게 노출할 미션의 명칭을 다국어로 지정
+                          description: 사용자에게 노출할 미션의 명칭을 다국어로 지정
+                        round:
+                          type: integer
+                          description: |-
+                            미션 반복 회차
+                            미션을 반복 수행할 회차를 지정하지 않으면 무한반복 미션으로 정의됩니다. 회차를 지정하면 missionType에 해당하는 조건이 형식에 맞게 초기화되거나 달성 기준이 변경됩니다.
+                        reward:
+                          type: array
+                          items:
+                            type: object
+                            required:
+                            - type
+                            - key
+                            - name
+                            - unitCount
+                            - startedAt
+                            - endedAt
+                            properties:
+                              key:
+                                type: string
+                                description: |-
+                                  보상의 종류에 따른 보상 대상입니다.
+                                  SKU유형이면 품목코드(sku), USDT이면 보상잔액을 가진 walletAddress가 반환됩니다.
+                              name:
+                                type: array
+                                items:
+                                  type: object
+                                  required:
+                                  - lang
+                                  - contents
+                                  properties:
+                                    lang:
+                                      type: string
+                                      description: 언어 코드
+                                    contents:
+                                      type: string
+                                description: 보상 대상의 사용자에게 공개된 명칭이 반환됩니다.
+                              type:
+                                enum:
+                                - SKU
+                                - USDT
+                                type: string
+                                default: SKU
+                                examples:
+                                - SKU
+                                description: |-
+                                  보상의 종류
+                                  SKU: 게임 재화를 지급합니다.
+                                  USDT: 테더를 지급합니다.
+                              endedAt:
+                                $ref: '#/components/schemas/Timestamp'
+                                description: |-
+                                  리워드 받을 수 있는 종료일시
+                                  미션이 기간이 종료되더라도 보상 가능 일시 이내에는 수령이 가능합니다. 사용자에게 종료된 미션을 계속 표시합니다.
+                              startedAt:
+                                $ref: '#/components/schemas/Timestamp'
+                                description: |-
+                                  리워드 받을 수 있는 시작일시
+                                  미션을 달성하더라도 해당 일시가 되어야 보상 수령이 가능합니다.
+                              unitCount:
+                                $ref: '#/components/schemas/BigDecimal'
+                                description: 지급하는 리워드 수량
+                          description: |-
+                            리워드가 설정되지 않은 미션의 경우 응답에 포함되지 않습니다.
+                            이 경우 미션이 진행되면 달성은 되나 보상 획득 요청을 할 수 없어 영구히 달성상태로 남게 됩니다.
+                        status:
+                          enum:
+                          - READY
+                          - IN_PROGRESS
+                          - CLOSED
+                          type: string
+                          default: READY
+                          examples:
+                          - READY
+                          description: |-
+                            조회 시점의 미션 상태
+                            READY: 아직 미션 시작일자가 안된 경우
+                            IN_PROGRESS: 현재 미션이 진행 중인 경우
+                            CLOSED: 미션이 종료된 경우
+                        endedAt:
+                          $ref: '#/components/schemas/Timestamp'
+                          description: |-
+                            미션을 종료할 일시
+                            보상받을 수 있는 기간이 따로 정의되어 있으며 미션 종료 일시 이후에는 사용자 이벤트가 발생해도 무시됩니다.
+                        eventKey:
+                          type: string
+                          examples:
+                          - LEVELUP
+                          description: |-
+                            3~36 글자 사이의 특정 이벤트를 지칭하는 식별자
+                            레벨업, 수집, 아이템 분해와 같은 사용자의 활동에 대응하는 값으로 업체측에서 지정
+                        mediaUrl:
+                          type: string
+                          description: 미션을 효과적으로 표현하기 위한 이미지 또는 영상
+                        mediaType:
+                          type: string
+                          description: IMAGE/VIDEO
+                        startedAt:
+                          $ref: '#/components/schemas/Timestamp'
+                          description: |-
+                            미션을 시작할 일시
+                            미션을 게시할 기간이 지정되면 해당 기간에만 미션 달성 처리가 됩니다. 이전에 달성한 이벤트는 무시됩니다.
+                        achievement:
+                          type: object
+                          required: []
+                          properties:
+                            count:
+                              type: integer
+                              description: |-
+                                도달해야 하는 업적의 수량
+                                재화 획득 10회라면 10으로 지정하고 재화 획득 업적 이벤트에서 10으로 수신하면 달성이 됩니다.
+                            missionId:
+                              type: array
+                              items:
+                                $ref: '#/components/schemas/Long'
+                              description: |-
+                                달성목표 미션 목록
+                                missionType이 CHALLENGE인 경우 달성해야 완수할 수 있는 대상 missionId 목록을 지정합니다.
+                                지정한 목록의 미션들이 각기 모든 회차까지 완료되어야 챌린지 미션이 될성된 것으로 판단하므로 무한 반복으로 지정된 경우 완수할 수 없게 되므로 주의가 필요합니다.
+                            difficulty:
+                              type: array
+                              items:
+                                type: integer
+                              description: |-
+                                회차별 난이도 설정
+                                missionType을 DIFFICULTY로 지정한 경우 round 수만큼 미션의 달성 업적 수량을 지정합니다.
+                                레벨 달성 구간 70, 90, 100, 105 라면 [70, 90, 100, 105]로 지정하고 round를 4로 지정합니다. 획득 업적 이벤트에서 95를 수신하면 70과 90의 미션이 달성됩니다.
+                          description: 미션 달성 목표를 지정합니다.
+                        description:
+                          type: array
+                          items:
+                            type: object
+                            required:
+                            - lang
+                            - contents
+                            properties:
+                              lang:
+                                type: string
+                                examples:
+                                - en
+                                description: 언어코드(en,ko,ja,th,zh)입니다.
+                              contents:
+                                type: string
+                                examples:
+                                - level up description
+                                description: '미션 설명입니다. '
+                          description: 사용자에게 노출할 미션을 달성할 조건이나 소개의 내용
+                        missionType:
+                          enum:
+                          - SINGLE
+                          - ACCUMULATE
+                          - DIFFICULTY
+                          - CHALLENGE
+                          type: string
+                          default: SINGLE
+                          examples:
+                          - SINGLE
+                          description: |-
+                            미션의 유형
+                            SINGLE: 단일 목표 달성 형태로 달성될 때마다 보상을 획득할 수 있고 회자 지정의 경우 매번 초기화됩니다.
+                            ACCUMULATE: 누적 목표 달성 형태로 일정 수치까지 도달하면 보상, 회차 지정의 경우 이전 달성치가 유지된 상태에서 누적 달성량이 증가합니다.
+                            DIFFICULTY: 회차별로 미션 난이도가 변화하도록 지정합니다. 회차와 난이도 설정의 횟수가 맞지 않으면 초기 설정 난이도로 회귀합니다.
+                            CHALLENGE: 진행 중인 미션들을 컬렉션으로 설정하여 지정한 미션들이 모두 달성되어야 같이 달성이 되어 보상받을 수 있게 됩니다.
+                        allowControlType:
+                          type: string
+                          description: 기본값은 BLACK_LIST로 controlledCountries 필드의 국가를 지정하지 않으면 모든 국가에서 참여 가능 (WHITE_LIST, BLACK_LIST)
+                        controlledCountries:
+                          type: array
+                          items:
+                            type: string
+                          description: ISO 3166-1 alpha-2의 2자리 대문자로 표현하는 국가 코드의 목록
+                    description: 미션 목록
+                  pageNumber:
+                    type: integer
+                    examples:
+                    - 1
+                    description: 현재 페이지
+                  totalElements:
+                    $ref: '#/components/schemas/Long'
+                    description: 필터 조건에 해당하는 총 목록 수
+          description: The request was successful, and the server has returned the requested resource in the response body.
+      parameters:
+      - in: query
+        name: missionType
+        style: form
+        schema:
+          enum:
+          - SINGLE
+          - ACCUMULATE
+          - DIFFICULTY
+          - CHALLENGE
+          type: string
+          examples:
+          - SINGLE
+        explode: true
+        required: false
+        description: 특정 미션 유형만 필터링해서 조회합니다.
+        allowReserved: false
+      - in: query
+        name: status
+        style: form
+        schema:
+          enum:
+          - READY
+          - IN_PROGRESS
+          - CLOSED
+          type: string
+          examples:
+          - READY
+        explode: true
+        required: false
+        description: 미션이 종료되었거나 시작하기 전 또는 진행 중인 경우만 필터링해서 조회합니다. 목록에서 제외처리한 내역은 표시되지 않습니다.
+        allowReserved: false
+      - in: query
+        name: page
+        style: form
+        schema:
+          type: integer
+        explode: true
+        required: true
+        description: |-
+          페이지 번호
+          0부터 시작하며 시작일시 기준 역순으로 반환합니다.
+        allowReserved: false
+      - in: query
+        name: size
+        style: form
+        schema:
+          type: integer
+        explode: true
+        required: false
+        description: |-
+          한 페이지의 표시할 목록수
+          기본값은 20이며 최대 100까지 조회 가능합니다.
+        allowReserved: false
+      description: |-
+        `preview` `prod`
+
+        설정한 미션과 미션에 할당된 리워드를 포함한 목록을 반환합니다.
+      operationId: 미션보드조회
+    post:
+      tags:
+      - mission
+      summary: 미션 생성
+      security:
+      - Authorization: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                title: 미션생성Ok
+                required:
+                - missionId
+                properties:
+                  missionId:
+                    $ref: '#/components/schemas/Long'
+                    description: |
+                      등록한 미션의 식별자가 반환됩니다.
+          description: The request was successful, and the server has returned the requested resource in the response body.
+      parameters: []
+      description: |-
+        `preview` `prod`
+
+        미션을 설정합니다.
+      operationId: 미션생성
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - requestId
+              - eventKey
+              - name
+              - description
+              - startedAt
+              - endedAt
+              - missionType
+              - achievement
+              properties:
+                link:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                    - deviceType
+                    - url
+                    properties:
+                      url:
+                        type: string
+                        description: custom URL scheme 으로 디바이스 유형별로 이동할 URL을 지정할 수 있습니다.
+                      deviceType:
+                        enum:
+                        - WEB
+                        - ANDROID
+                        - IOS
+                        type: string
+                        default: WEB
+                        examples:
+                        - WEB
+                        description: |-
+                          미션 이동 경로
+                          각 디바이스별로 모두 입력하는 것을 권장하며 지원하지 않는 디바이스는 입력하지 않습니다.
+                          입력하지 않은 디바이스 유형으로 접근한 사용자는 링크를 제공하지 않습니다.
+                          WEB
+                          ANDROID
+                          IOS
+                  description: 미션 수행을 위해 이동할 링크를 지정합니다.
+                name:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                    - lang
+                    - contents
+                    properties:
+                      lang:
+                        type: string
+                        description: 언어코드(en,ko,ja,th,zh)입니다.
+                      contents:
+                        type: string
+                        description: 미션 명칭
+                  description: 사용자에게 노출할 미션의 명칭을 다국어로 지정
+                round:
+                  type: integer
+                  description: |-
+                    미션 반복 회차
+                    미션을 반복 수행할 회차를 지정하지 않으면 무한반복 미션으로 정의됩니다. 회차를 지정하면 missionType에 해당하는 조건이 형식에 맞게 초기화되거나 달성 기준이 변경됩니다.
+                endedAt:
+                  $ref: '#/components/schemas/Timestamp'
+                  description: |-
+                    미션을 종료할 일시
+                    미션 종료 일시 이후에는 해당 미션에 설정된 eventKey로는 업적갱신이 되지 않아야 하면 이는 발송측에서 제어해야 하므로 일시 기록에 유의해야 합니다.
+                    종료 일시 이후에도 eventKey를 발송하면 미션이 추가로 달성될 수 있습니다.
+                eventKey:
+                  type: string
+                  description: |-
+                    3~36 글자 사이의 특정 이벤트를 지칭하는 식별자
+                    레벨업, 수집, 아이템 분해와 같은 사용자의 활동에 대응하는 값으로 업체측에서 지정
+                mediaUrl:
+                  type: string
+                  description: 미션을 효과적으로 표현하기 위한 이미지 또는 영상
+                mediaType:
+                  enum:
+                  - IMAGE
+                  - VIDEO
+                  type: string
+                  default: IMAGE
+                  examples:
+                  - IMAGE
+                  description: IMAGE/VIDEO
+                requestId:
+                  type: string
+                  description: |-
+                    16~36 글자 사이의 요청의 유일성을 보장할 수 있는 값(ex: UUID)을 지정합니다.
+                    request timeout등의 오류에 의해 중복 등록되는 것을 방지하기 위한 값입니다.
+                startedAt:
+                  $ref: '#/components/schemas/Timestamp'
+                  description: |-
+                    미션을 시작할 일시
+                    미션을 게시할 기간이 지정되면 해당 기간에만 미션 달성 처리가 됩니다. 이전에 달성한 이벤트는 무시됩니다.
+                achievement:
+                  type: object
+                  required: []
+                  properties:
+                    count:
+                      type: integer
+                      description: |-
+                        도달해야 하는 업적의 수량
+                        재화 획득 10회라면 10으로 지정하고 재화 획득 업적 이벤트에서 10으로 수신하면 달성이 됩니다.
+                    missionIds:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/Long'
+                      description: |-
+                        달성목표 미션 목록
+                        missionType이 CHALLENGE인 경우 달성해야 완수할 수 있는 대상 missionId 목록을 지정합니다.
+                        지정한 목록의 미션들이 각기 모든 회차까지 완료되어야 챌린지 미션이 될성된 것으로 판단하므로 무한 반복으로 지정된 경우 완수할 수 없게 되므로 주의가 필요합니다.
+                    difficulties:
+                      type: array
+                      items:
+                        type: integer
+                      description: |-
+                        회차별 난이도 설정
+                        missionType을 DIFFICULTY로 지정한 경우 round 수만큼 미션의 달성 업적 수량을 지정합니다.
+                        레벨 달성 구간 70, 90, 100, 105 라면 [70, 90, 100, 105]로 지정하고 round를 4로 지정합니다. 획득 업적 이벤트에서 95를 수신하면 70과 90의 미션이 달성됩니다.
+                  description: 미션 달성 목표를 지정합니다.
+                description:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                    - lang
+                    - contents
+                    properties:
+                      lang:
+                        type: string
+                        description: 언어코드(en,ko,ja,th,zh)입니다.
+                      contents:
+                        type: string
+                        description: 미션 설명입니다.
+                  description: 사용자에게 노출할 미션을 달성할 조건이나 소개의 내용
+                missionType:
+                  type: string
+                  description: |-
+                    미션의 유형
+                    SINGLE: 단일 목표 달성 형태로 달성될 때마다 보상을 획득할 수 있고 회자 지정의 경우 매번 초기화됩니다.
+                    ACCUMULATE: 누적 목표 달성 형태로 일정 수치까지 도달하면 보상, 회차 지정의 경우 이전 달성치가 유지된 상태에서 누적 달성량이 증가합니다.
+                    DIFFICULTY: 회차별로 미션 난이도가 변화하도록 지정합니다. 회차와 난이도 설정의 횟수가 맞지 않으면 초기 설정 난이도로 회귀합니다.
+                    CHALLENGE: 진행 중인 미션들을 컬렉션으로 설정하여 지정한 미션들이 모두 달성되어야 같이 달성이 되어 보상받을 수 있게 됩니다.
+                allowControlType:
+                  type: string
+                  description: 기본값은 BLACKLIST로 controlledCountries 필드의 국가를 지정하지 않으면 모든 국가에서 참여 가능 (WHITELIST, BLACKLIST)
+                controlledCountries:
+                  type: array
+                  items:
+                    type: string
+                  description: ISO 3166-1 alpha-2의 2자리 대문자로 표현하는 국가 코드의 목록
+        required: true
+        description: ''
+  /api/v1/item/ability/{code}:
+    put:
+      tags:
+      - item
+      summary: 아이템 능력 설정 수정
+      security:
+      - Authorization: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: 'null'
+                title: 아이템능력설정수정Ok
+          description: The request was successful, and the server has returned the requested resource in the response body.
+      parameters:
+      - $ref: '#/components/parameters/code'
+      - in: header
+        name: Content-Type
+        style: simple
+        schema:
+          type: string
+        explode: false
+        required: true
+        description: application/json
+        allowReserved: false
+      description: |
+        `preview` `prod`
+
+        등록한 아이템 능력의 설정을 수정합니다. 지정한 코드가 이미 사용되고 있을 수 있으므로 변경했을 때 사용자가 혼란을 가지지 않는 정도의 변경을 권장합니다.
+
+        path 로는 아이템 능력 등록에서 지정했던 code 값을 지정합니다.
+      operationId: 아이템능력설정수정
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - optionType
+              - unitType
+              - color
+              - name
+              properties:
+                name:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                    - lang
+                    - contents
+                    properties:
+                      lang:
+                        type: string
+                        examples:
+                        - ko
+                        - en
+                        - zh
+                        - ja
+                        description: 언어 코드 ex) en, ko, zh, ja, th
+                      contents:
+                        type: string
+                        examples:
+                        - Major Attack Power Boost
+                        - Major Defense Enhancement
+                        description: 언어 코드에 해당하는 이름을 지정합니다.
+                  description: 능력치의 이름을 지정합니다.
+                color:
+                  enum:
+                  - NONE
+                  - YELLOW
+                  - GREEN
+                  - BLUE
+                  - MAGENTA
+                  - ORANGE
+                  - RED
+                  - GREY
+                  type: string
+                  default: NONE
+                  examples:
+                  - MAGENTA
+                  description: |-
+                    능력치를 표기할 때 표시할 색상을 지정합니다. 테마에 따라 지정한 색상을 명도와 채도를 조절하여 표시하며 가능하면 게임내 표기하는 색상을 지정하는 것이 유리합니다.
+
+                    지정가능한 색상: YELLOW, GREEN, BLUE, MAGENTA, ORANGE, RED, GREY, NONE
+                    (NONE은 따로 색깔은 지정하지 않음을 뜻하고 기본색상으로 표현됩니다.)
+                unitType:
+                  enum:
+                  - NONE
+                  - PERCENTAGE
+                  - NUMERIC
+                  - LEVEL
+                  type: string
+                  default: NONE
+                  examples:
+                  - LEVEL
+                  description: |+
+                    능력치를 어떤 형식으로 표현할지를 결정하여 지정합니다.
+
+                    NONE: 입력한 수치 그대로 노출
+
+                    PERCENTAGE: 100% 형식의 표시
+
+                    NUMERIC: +100 형식으로 표시
+
+                    LEVEL: 100Lv 형식으로 표시
+
+
+                    예시는 abilities.value의 값을 100으로 지정했을 때 형식입니다.
+
+                optionType:
+                  enum:
+                  - BASIC
+                  - ENHANCE
+                  - ADDITIONAL
+                  - SMELTING
+                  - CONSTRAINT
+                  type: string
+                  default: BASIC
+                  examples:
+                  - ENHANCE
+                  description: |-
+                    능력치의 옵션 분류를 지정합니다. 각 옵션 분류마다 사용자에게 표시되는 위치가 달라집니다.
+
+                    BASIC: 기본 능력치 변경 사항
+
+                    ENHANCE: 강화를 통해 변경된 능력 (강화 옵션으로 표기)
+
+                    ADDITIONAL: 감정이나 소켓팅을 통해 변경된 능력 (추가 옵션으로 표기)
+
+                    SMELTING: 제련이나 속성 부여를 통해 변경된 능력 (제련 옵션으로 표기)
+
+                    CONSTRAINT: 변화에 의해 추가되거나 변경된 제약 조건 (제약 옵션으로 표기)
+        required: true
+        description: ''
+  /api/v1/sale/b2c/statistics:
+    get:
+      tags:
+      - sale
+      summary: 판매량 통계 조회
+      security:
+      - Authorization: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                title: 판매량통계조회Ok
+                required:
+                - data
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                      - sku
+                      - amount
+                      - price
+                      - currencyType
+                      properties:
+                        sku:
+                          type: string
+                          description: 판매된 품목이 반환됩니다. 여러 B2C 판매에서 각각 판매된 내역이 합산됩니다.
+                        price:
+                          $ref: '#/components/schemas/Decimal'
+                          description: 판매된 품목의 판매가 기준 합산가가 반환됩니다. 여러 B2C 판매에서 서로 다른 가격으로 판매했더라도 각 개별 판매가가 하나로 합산됩니다.
+                        amount:
+                          type: integer
+                          description: 판매된 품목의 수량이 반환됩니다.
+                        currencyType:
+                          type: string
+                          description: 합산가의 환산 통화 기준이 반환됩니다.
+                    description: 판매된 상품이 없는 경우 빈 목록이 반환됩니다.
+          description: The request was successful, and the server has returned the requested resource in the response body.
+      parameters:
+      - in: query
+        name: startDate
+        style: form
+        schema:
+          $ref: '#/components/schemas/Long'
+          type: number
+          description: |-
+            조회하고자 하는 시작 일시를 지정합니다.
+            milliseconds 단위 UNIX timestamp
+        explode: true
+        required: true
+        description: |-
+          조회하고자 하는 시작 일시를 지정합니다.
+          milliseconds 단위 UNIX timestamp
+        allowReserved: false
+      - in: header
+        name: Content-Type
+        style: simple
+        schema:
+          type: string
+        explode: false
+        required: true
+        description: application/json
+        allowReserved: false
+      - in: query
+        name: endDate
+        style: form
+        schema:
+          $ref: '#/components/schemas/Long'
+          type: number
+          items:
+            $ref: '#/components/schemas/Long'
+          description: |-
+            조회하고자 하는 시작 일시를 지정합니다.
+            milliseconds 단위 UNIX timestamp
+        explode: true
+        required: false
+        description: |-
+          조회하고자 하는 종료 일시를 지정합니다. 미지정시 현재 시각을 기준으로 지정하게 됩니다.
+          startDate가 1년전이라면 endDate는 반드시 지정되어야 하며 최대 기간은 1년입니다.
+          milliseconds 단위 UNIX timestamp
+        allowReserved: false
+      - in: query
+        name: saleIds
+        style: form
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/Long'
+        explode: true
+        required: false
+        description: 특정 판매식별자만으로 필터링하려면 B2C 판매 식별자를 지정하세요. ex) ...&saleIds=10,12,13
+        allowReserved: false
+      - in: query
+        name: currencyType
+        style: form
+        schema:
+          type: string
+        explode: true
+        required: false
+        description: 환산가 유형을 지정하세요. 미지정하는 경우 USD가 기본 지정됩니다. (USD, KRW, JPY, TWD, THB, IDR, PHP, USDT)
+        allowReserved: false
+      description: |-
+        `preview` `prod`
+
+        B2C 판매량 통계를 기간별로 조회합니다. 특정 기간 중에 판매된 상품의 품목 기준 수량과 판매가 기준 환산가 집계를 제공하며 용도에 따라 기간을 1년 이내로 지정하여 월집계, 일집계, 시간집계 등의 용도로 응용할 수 있습니다.
+
+        Note
+
+        같은 파라미터에 대해 약 5초간의 갱신 지연이 있습니다. 5초 이내에 같은 파라미터로 지정한 경우 동일한 응답을 반환합니다.
+        초당 10회 초과 호출하는 경우 429 Too Many Request 응답을 에러로 반환합니다. (타임윈도우 방식)
+        판매 수량이 응답지연이 발생할 정도로 많은 경우 기간을 보다 짧게 지정하여 병렬 호출하는 방식을 사용하는 것이 좋습니다.
+      operationId: 판매량통계조회
+  /api/v1/account/session/kick:
+    delete:
+      summary: 스토어 세션 킥
+      security:
+      - Authorization: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                title: 스토어세션킥Ok
+                required:
+                - guid
+                properties:
+                  guid:
+                    type: string
+          description: The request was successful, and the server has returned the requested resource in the response body.
+      parameters:
+      - in: query
+        name: guid
+        style: form
+        schema:
+          type: string
+        explode: true
+        required: true
+        description: 전체 세션을 해제할 대상 사용자의 guid를 지정합니다.
+        allowReserved: false
+      - in: header
+        name: Content-Type
+        style: simple
+        schema:
+          type: string
+        explode: false
+        required: true
+        description: application/json
+        allowReserved: false
+      description: |-
+        `preview` `prod`
+
+        스토어에는 단일 guid로 여러 브라우저로 세션을 유지할 수 있으며 멀티 디바이스에서 각각 로그인된 세션을 유지할 수 있습니다. 계정 제재나 상태 변화로 이전에 발급한 세션을 무효화해야 하는 사유가 있는 경우 이 API를 이용해 guid에 연결된 모든 세션을 해제할 수 있습니다.
+      operationId: 스토어세션킥
+  /api/v1/sale/b2c/{b2cSaleId}:
+    patch:
+      tags:
+      - sale
+      summary: 판매 변경
+      security:
+      - Authorization: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                title: 판매변경Ok
+                required:
+                - requestId
+                - id
+                - itemList
+                - title
+                - description
+                - currencyType
+                - price
+                - multiCurrencyPrice
+                - refundType
+                - status
+                - mediaType
+                - mediaUrl
+                - limitPurchaseCount
+                - limitMaxPurchasePerOnce
+                - periodType
+                - periodicType
+                - openedAt
+                - closedAt
+                - sectionId
+                - phase
+                - displayOrder
+                properties:
+                  id:
+                    $ref: '#/components/schemas/Long'
+                    description: 상품의 식별자로 추후 링크 이동 등에서 대상 상품을 특정해서 파라미터로 사용할 수 있습니다.
+                  phase:
+                    type: string
+                    examples:
+                    - ON_SALE
+                    description: |-
+                      현재 판매 상품의 판매 기간 상태를 반환합니다.
+                      READY_FOR_SALE: 상품의 판매 시작 시각 이전
+                      ON_SALE: 상품 판매 중
+                      CLOSED: 상품 판매 시각 이후 종료된 상태
+                  price:
+                    $ref: '#/components/schemas/BigDecimal'
+                    description: (deprecated 25.7.10) 등록한 상품의 가격입니다.
+                  title:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                      - lang
+                      - contents
+                      properties:
+                        lang:
+                          type: string
+                          description: 언어코드(en,ko,ja,th,zh)입니다.
+                        contents:
+                          type: string
+                          description: 언어코드에 해당하는 상품의 이름입니다.
+                    description: 사용자에게 노출할 판매 상품의 이름을 다국어로 지정합니다.
+                  status:
+                    type: string
+                    description: |-
+                      현재 판매 상품의 활성화 상태를 반환합니다.
+                      ACTIVE: 상품이 활성화 되어있음
+                      INACTIVE: 상품이 비활성화 된 상태
+                  resetAt:
+                    $ref: '#/components/schemas/Timestamp'
+                    description: 설정한 periodicType의 초기화 주기를 실행할 기준 일시입니다.
+                  closedAt:
+                    $ref: '#/components/schemas/Timestamp'
+                    description: 판매를 종료할 시간입니다. 판매가 종료되면 해당 상품은 더 이상 노출되지 않으며, 종료 직전에 구매를 시도한 경우 판매 종료 이후에도 구매가 될 수 있습니다.
+                  itemList:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                      - sku
+                      - amount
+                      - imageUrl
+                      - name
+                      - description
+                      properties:
+                        sku:
+                          type: string
+                          description: 품목코드입니다.
+                        name:
+                          type: array
+                          items:
+                            type: object
+                            required:
+                            - lang
+                            - contents
+                            properties:
+                              lang:
+                                type: string
+                                description: 언어코드(en,ko,ja,th,zh)입니다.
+                              contents:
+                                type: string
+                                description: 언어코드에 해당하는 아이템의 이름입니다.
+                          description: 다국어로 지정된 게임 아이템 이름입니다.
+                        amount:
+                          type: integer
+                          description: 한건의 구매에서 지정한 아이템을 몇개 입수할 수 있는지 수량 입니다.
+                        imageUrl:
+                          type: string
+                          description: 아이템에 등록된 이미지를 반환합니다.
+                        description:
+                          type: array
+                          items:
+                            type: object
+                            required:
+                            - lang
+                            - contents
+                            properties:
+                              lang:
+                                type: string
+                                description: 언어코드(en,ko,ja,th,zh)입니다.
+                              contents:
+                                type: string
+                                description: 언어코드에 해당하는 아이템의 설명입니다.
+                          description: "\t다국어로 지정된 게임 아이템 설명입니다."
+                        subItemList:
+                          type: array
+                          items:
+                            type: object
+                            required:
+                            - sku
+                            - amount
+                            - imageUrl
+                            - name
+                            - description
+                            properties:
+                              sku:
+                                type: string
+                                description: 품목코드입니다.
+                              name:
+                                type: array
+                                items:
+                                  type: object
+                                  required:
+                                  - lang
+                                  - contents
+                                  properties:
+                                    lang:
+                                      type: string
+                                      description: 언어코드(en,ko,ja,th,zh)입니다.
+                                    contents:
+                                      type: string
+                                      description: 언어코드에 해당하는 아이템의 이름입니다.
+                                description: 다국어로 지정된 게임 아이템 이름입니다.
+                              amount:
+                                type: integer
+                                description: 포함된 구성의 아이템의 수량을 반환합니다.
+                              imageUrl:
+                                type: string
+                                description: 아이템에 등록된 이미지를 반환합니다.
+                              description:
+                                type: array
+                                items:
+                                  type: object
+                                  required:
+                                  - lang
+                                  - contents
+                                  properties:
+                                    lang:
+                                      type: string
+                                    contents:
+                                      type: string
+                          description: 패키지 유형의 아이템인 경우 구성품을 목록으로 반환합니다.
+                    description: 등록된 상품의 구성 아이템 정보를 반환합니다.
+                  mediaUrl:
+                    type: string
+                    description: |-
+                      등록된 커버 이미지 또는 영상의 URL 입니다.
+                      레티나, PC모드 지원을 위해 정방형 944 x 944 이상으로 등록하는 것을 권장합니다.
+                  openedAt:
+                    $ref: '#/components/schemas/Timestamp'
+                    description: 판매를 게시할 시간입니다. 가급적 하루 정도의 유예기간을 두어 미래 시간을 예약을 하며, 급하게 설정할 필요가 있다면 협의가 필요합니다.
+                  mediaType:
+                    type: string
+                    description: 등록된 커버의 유형을 반환합니다. (VIDEO, IMAGE)
+                  requestId:
+                    type: string
+                    description: 요청시 입력한 요청식별자를 반환합니다.
+                  sectionId:
+                    $ref: '#/components/schemas/Long'
+                    description: 상품이 노출 될 section의 id입니다. 설정하지 않았을 경우 첫 번째 section에 위치합니다.
+                  periodType:
+                    type: string
+                    description: (deprecated 25.7.10) 설정한 계정당 구매 가능 수량의 초기화 주기입니다. 설정하지 않았을 경우 'NONE' 으로 응답됩니다.
+                  refundType:
+                    type: string
+                    description: |-
+                      설정한 상품의 환불 정책입니다. 환불과 관련해서는 미리 협의가 필요합니다.
+                      REFUNDABLE : 모든 국가 환불 가능
+                      NON_REFUNDABLE : 환불 불가능
+                      PARTIALLY_REFUNDABLE : 일부 국가만 환불 가능
+                  description:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                      - lang
+                      - contents
+                      properties:
+                        lang:
+                          type: string
+                          description: 언어코드(en,ko,ja,th,zh)입니다.
+                        contents:
+                          type: string
+                          description: 언어코드에 해당하는 상품의 설명입니다.
+                    description: 사용자에게 상품을 효과적으로 표현하고 상품의 특징을 알 수 있는 설명을 다국어로 지정합니다.
+                  currencyType:
+                    type: string
+                    description: (deprecated 25.7.10) 등록한 상품의 가격 통화입니다.
+                  displayOrder:
+                    type: integer
+                    description: section 내에서 노출되는 순서입니다. 설정하지 않았을 경우 첫 번째로 위치합니다.
+                  periodicType:
+                    type: string
+                    description: (since 25.7.10) 설정한 계정당 구매 가능 수량의 초기화 주기입니다. 설정하지 않았을 경우 'NONE' 으로 응답됩니다.
+                  limitStockAmount:
+                    $ref: '#/components/schemas/Long'
+                    description: |-
+                      등록 시 설정한 총 재고의 수량입니다. 수량만큼의 구매가 발생하면 매진 상태로 노출되며 더 이상 구매를 할 수 없는 상태가 됩니다.
+                      총 재고의 수량은 판매 도중이나 매진일 때에도 변경이 가능합니다.
+                  limitPurchaseCount:
+                    type: integer
+                    description: 등록된 상품의 한 계정당 구매할 수 있는 최대 개수입니다. periodicType을 이용해 기간별 구매 제한 개수를 초기화할 수 있습니다.
+                  multiCurrencyPrice:
+                    type: object
+                    description: (since 25.7.10) 등록한 상품의 통화와 가격입니다.
+                  limitMaxPurchasePerOnce:
+                    type: integer
+                    description: 등록된 상품의 한번의 결제로 구매할 수 있는 최대 개수입니다. 판매가격이나 상품의 특성에 따라 수량을 조절해야 사용자가 구매하는 과정에서 불필요한 오류가 발생하지 않을 수 있습니다. 최대 개수는 50개입니다.
+                  nonRefundableCountryList:
+                    type: array
+                    items:
+                      type: string
+                    description: PARTIALLY_REFUNDABLE 환불 정책 일 때 환불이 불가능한 국가의 목록입니다.
+          description: The request was successful, and the server has returned the requested resource in the response body.
+      parameters:
+      - $ref: '#/components/parameters/b2cSaleId'
+      description: "`preview` `prod`\n\n판매 대기 중이거나 판매 중 또는 매진된 상황에서 일정이나 종료 시기, 재고, 설명 등을 수정할 수 있습니다. 상품의 구성을 직접적으로 수정하는 것은 불가하며 판매 개시 이후에는 이미 구매한 이력에 영향을 줄 수 있는 구매 가능 개수 초기화 설정과 판매 개시 시간의 변경을 할 수 없습니다. 변경이 불가한 대상을 수정해야 하는 사항이라면 조기 종료 처리 후 새로운 판매 등록을 해야 합니다.\n\nb2cSaleId 로는 판매 등록 후 반환 받은 id 값을 지정합니다. "
+      operationId: 판매변경
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - requestId
+              properties:
+                title:
+                  type: array
+                  items:
+                    type: object
+                    required: []
+                    properties:
+                      lang:
+                        type: string
+                        description: 언어코드(en,ko,ja,th,zh)입니다.
+                      contents:
+                        type: string
+                        description: 언어코드에 해당하는 상품의 이름입니다.
+                  description: 사용자에게 노출할 판매 상품의 이름을 다국어로 지정합니다.
+                resetAt:
+                  $ref: '#/components/schemas/Timestamp'
+                  description: periodicType의 초기화 주기를 실행할 기준 일시를 변경합니다. 판매 개시 이후에는 변경할 수 없으며 openedAt 보다 같거나 이전으로 설정해야 합니다.
+                closedAt:
+                  $ref: '#/components/schemas/Timestamp'
+                  description: 판매 종료할 시간을 지정합니다. 판매가 종료되면 해당 상품은 더 이상 노출되지 않으며, 종료 직전에 구매를 시도한 경우 판매 종료 이후에도 구매가 될 수 있습니다.
+                mediaUrl:
+                  type: string
+                  description: |-
+                    상품의 커버 이미지 또는 영상의 URL을 "미디어 파일 업로드" 기능을 이용해 반환받은 URL을 지정합니다.
+                    레티나, PC모드 지원을 위해 정방형 944 x 944 이상으로 등록하는 것을 권장합니다.
+                openedAt:
+                  $ref: '#/components/schemas/Timestamp'
+                  description: 판매 게시 시간을 변경합니다. 판매 개시 이후에는 변경할 수 없으므로 판매를 조기 종료하고 재등록해야 합니다.
+                mediaType:
+                  type: string
+                  description: 상품 커버로 등록할 대상의 유형을 지정합니다. (VIDEO, IMAGE)
+                requestId:
+                  type: string
+                  description: 요청의 유일성을 보장하기 위한 5~36자 이내의 요청키, 중복요청이 발생하지 않도록 동일 요청에 대해서는 항상 동일 요청키로 지정해야 합니다.
+                sectionId:
+                  $ref: '#/components/schemas/Long'
+                  description: 스토어에 설정한 section의 식별자를 지정하면 해당 영역에 게시됩니다. 미지정시 가장 첫 번째 섹션의 가장 첫 번째에 위치하게 됩니다.
+                periodType:
+                  type: string
+                  description: |-
+                    (deprecated 25.7.10) 계정당 구매 가능 수량 초기화 주기를 변경합니다. 판매 개시 이후에는 변경할 수 없습니다.
+                    DAILY: 매일 초기화
+                    WEEKLY: 매주 초기화
+                    BI_WEEKLY: 격주 초기화
+                    MONTHLY: 매달 초기화
+                description:
+                  type: array
+                  items:
+                    type: object
+                    required: []
+                    properties:
+                      lang:
+                        type: string
+                        description: 언어코드(en,ko,ja,th,zh)입니다.
+                      contents:
+                        type: string
+                        description: 언어코드에 해당하는 상품의 설명입니다.
+                  description: 사용자에게 상품을 효과적으로 표현하고 상품의 특징을 알 수 있는 설명을 다국어로 지정합니다.
+                displayOrder:
+                  type: integer
+                  description: section 내에서 노출할 순서를 지정합니다. 이미 게시된 상품을 기준으로 순서를 입력값에 맞춰 조정합니다. 미지정시 가장 첫 번째에 위치하게 됩니다.
+                periodicType:
+                  type: string
+                  description: |-
+                    (since 25.7.10) 계정당 구매 가능 수량 초기화 주기를 변경합니다. 판매 개시 이후에는 변경할 수 없습니다.
+                    DAILY: 매일 초기화
+                    WEEKLY: 매주 초기화
+                    BI_WEEKLY: 격주 초기화
+                    MONTHLY: 매달 초기화
+                limitStockAmount:
+                  $ref: '#/components/schemas/Long'
+                  description: |-
+                    총 재고의 수량을 제한할 사유가 있다면 지정합니다.
+                    수량만큼의 구매가 발생하면 매진 상태로 노출되며 더 이상 구매를 할 수 없는 상태가 됩니다.
+                    총 재고의 수량은 판매 도중이나 매진일 때에도 변경이 가능합니다.
+                    미지정시 무제한으로 설정됩니다.
+                limitPurchaseCount:
+                  type: string
+                  description: 한 계정당 구매할 수 있는 최대 개수를 지정합니다. periodicType을 이용해 기간별 구매 제한 개수를 초기화할 수 있습니다.
+                limitMaxPurchasePerOnce:
+                  type: string
+                  description: 한번의 결제로 구매할 수 있는 최대 개수를 지정합니다. 판매가격이나 상품의 특성에 따라 수량을 조절해야 사용자가 구매하는 과정에서 불필요한 오류가 발생하지 않을 수 있습니다. 최대 개수는 50개입니다.
+        required: true
+        description: ''
+    delete:
+      tags:
+      - sale
+      summary: B2C 판매 삭제
+      security:
+      - Authorization: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                title: 판매삭제Ok
+                required:
+                - requestId
+                - id
+                properties:
+                  id:
+                    $ref: '#/components/schemas/Long'
+                    description: |
+                      삭제된 상품의 식별자입니다.
+                  requestId:
+                    type: string
+                    description: 요청시 입력한 요청식별자를 반환합니다.
+          description: The request was successful, and the server has returned the requested resource in the response body.
+      parameters:
+      - $ref: '#/components/parameters/b2cSaleId'
+      description: "`preview` `prod`\n\n상품을 삭제합니다. 이미 판매가 시작된 상품은 삭제를 할 수 없으며 일시적으로 정지를 희망할 경우 합의가 필요합니다. 오등록된 상품을 삭제하는 용도로 사용합니다.\n\nb2cSaleId 는 판매 등록 후 반환 받은 id 값을 지정합니다.\n\nbody 에 requestId 를 담아 보냅니다. \n\nparameter | type | required | description\n---|---|---|---\nrequestId | String | required | 요청의 유일성을 보장하기 위한 5~36자 이내의 요청키, 중복요청이 발생하지 않도록 동일 요청에 대해서는 항상 동일 요청키로 지정해야 합니다.\n"
+      operationId: b2C판매삭제
+  /api/v1/sale/c2c/{c2cSaleId}:
+    delete:
+      tags:
+      - item
+      summary: C2C 판매 취소 요청
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                title: C2C판매취소요청Ok
+                required:
+                - status
+                properties:
+                  status:
+                    type: string
+                    examples:
+                    - SUCCESS
+                    description: 취소 처리 결과 상태를 반환합니다.
+          description: The request was successful, and the server has returned the requested resource in the response body.
+      parameters:
+      - $ref: '#/components/parameters/c2cSaleId'
+      description: |-
+        `preview` `prod`
+
+        사용자가 등록한 C2C 판매 내역을 취소 요청합니다. 구매자가 결제를 진행 중이거나 웹샵에서 취소요청을 하는 경우를 포함해 C2C 판매 물품의 재고 상태가 변경될 가능성이 있는 경우에는 취소할 수 없습니다.
+
+        path 로 사용자가 판매 등록 후 발급된 C2C 판매 식별자를 지정합니다.
+        실링 요청에서 전달한 c2cSaleId를 이용합니다.
+      operationId: c2C판매취소요청
+  /api/v1/incentive/mission/achieve:
+    post:
+      tags:
+      - mission
+      summary: 업적 달성 기록
+      security:
+      - Authorization: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: 'null'
+                title: 업적달성기록Ok
+          description: The request was successful, and the server has returned the requested resource in the response body.
+      parameters: []
+      description: |-
+        `preview` `prod`
+
+        업적을 달성한 경우 미션상태 갱신을 위해 요청 합니다. 누가 언제 어떤 업적을 얼마나 달성했는지 스토어에 알려주게 되며 하나의 업적의 결과로 동일 미션의 여러 회차가 동시에 달성될 수 있으며 여러 미션이 한번에 달성될 수 있습니다. idempotent한 동작이므로 중복 요청하더라도 중복해서 미션이 달성되지는 않습니다. 동시 요청량 제어나 타임아웃 발생 등으로 요청을 완료하지 못했다면 일정 시간의 지연 후 재발송하여 미션상태를 동기화할 수 있도록 하는 것을 권장합니다.
+      operationId: 업적달성기록
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - achieve
+              properties:
+                achieve:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                    - guid
+                    - eventKey
+                    - progress
+                    - achievedAt
+                    properties:
+                      cuid:
+                        type: string
+                        description: 업적을 달성한 캐릭터의 cuid를 지정합니다.
+                      guid:
+                        type: string
+                        description: 업적을 달성한 계정의 guid를 지정합니다.
+                      eventKey:
+                        type: string
+                        description: 달성한 업적의 이벤트키를 지정합니다.
+                      progress:
+                        type: integer
+                      achievedAt:
+                        $ref: '#/components/schemas/Timestamp'
+                        description: Unix timestamp로 진행수치에 해당하는 이벤트가 발생한 시점을 지정합니다. 동일 eventKey로 수신한 이력보다 과거의 요청을 받으면 무시합니다.
+                  description: 달성한 업적을 목록으로 일괄 요청하며 최대 100개까지 지정할 수 있습니다.
+        required: true
+        description: ''
+  /api/v1/item/send-item/guid/{guid}:
+    get:
+      tags:
+      - item
+      summary: 아이템 배송 이력 조회
+      security:
+      - Authorization: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - content
+                - last
+                - totalElements
+                - pageNumber
+                - first
+                properties:
+                  last:
+                    type: boolean
+                  first:
+                    type: boolean
+                  content:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                      - requestId
+                      - itemList
+                      - acquiredAt
+                      - status
+                      properties:
+                        status:
+                          type: string
+                          examples:
+                          - COMPLETED
+                        itemList:
+                          type: array
+                          items:
+                            type: object
+                            required:
+                            - sku
+                            - amount
+                            properties:
+                              sku:
+                                type: string
+                              amount:
+                                type: integer
+                        requestId:
+                          type: integer
+                          examples:
+                          - 100
+                        acquiredAt:
+                          $ref: '#/components/schemas/Timestamp'
+                          description: '1760583685000'
+                  pageNumber:
+                    type: integer
+                  totalElements:
+                    type: integer
+          description: The request was successful, and the server has returned the requested resource in the response body.
+      parameters:
+      - in: path
+        name: guid
+        schema:
+          type: string
+        required: true
+      description: |
+        `preview` `prod`
+
+        배송 요청 받은 아이템의 배송 이력을 조회합니다.
+      operationId: 아이템배송이력조회
+  /api/v1/sale/b2c/section/{sectionId}:
+    patch:
+      tags:
+      - section
+      summary: 섹션 변경
+      security:
+      - Authorization: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                title: 섹션변경Ok
+                required:
+                - id
+                - title
+                - iconImageUrl
+                - displayOrder
+                - active
+                properties:
+                  id:
+                    type: integer
+                    format: int64
+                    examples:
+                    - 1
+                    - 2
+                    description: 섹션의 식별자입니다.
+                  title:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                      - lang
+                      - contents
+                      properties:
+                        lang:
+                          type: string
+                          examples:
+                          - ko
+                          - en
+                          description: 언어코드(en,ko,ja,th,zh)입니다.
+                        contents:
+                          type: string
+                          examples:
+                          - weapons
+                          - premium weapons
+                          description: 언어코드에 해당하는 섹션의 이름입니다.
+                    description: 등록된 섹션의 다국어 처리된 제목입니다.
+                  active:
+                    type: boolean
+                    examples:
+                    - true
+                    - false
+                    description: 등록된 섹션의 활성화 상태입니다.
+                  displayOrder:
+                    type: integer
+                    format: int32
+                    examples:
+                    - 1
+                    - 2
+                    description: 등록된 섹션의 노출 순서입니다. 동일한 displayOrder일 경우 최근 생성된 섹션이 먼저 노출됩니다.
+                  iconImageUrl:
+                    type: string
+                    examples:
+                    - https://cdn.store.example.com/media/processed/section_premium_weapon.jpg
+                    description: 등록된 섹션의 아이콘 이미지 URL 입니다.
+          description: The request was successful, and the server has returned the requested resource in the response body.
+      parameters:
+      - $ref: '#/components/parameters/sectionId'
+      - in: header
+        name: Content-Type
+        style: simple
+        schema:
+          type: string
+        explode: false
+        required: true
+        description: application/json
+        allowReserved: false
+      description: |-
+        `preview` `prod`
+
+        섹션의 정보 및 활성화 상태에 대한 변경을 요청합니다.
+      operationId: 섹션변경
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: []
+              properties:
+                title:
+                  type: array
+                  items:
+                    type: object
+                    required: []
+                    properties:
+                      lang:
+                        type: string
+                        examples:
+                        - ko
+                        - en
+                        description: 언어코드(en,ko,ja,th,zh)입니다.
+                      contents:
+                        type: string
+                        examples:
+                        - premium weapons
+                        - weapons
+                        description: 언어코드에 해당하는 섹션의 이름입니다.
+                  description: 사용자에게 노출할 섹션의 제목을 다국어로 지정합니다.
+                active:
+                  type: boolean
+                  description: 'true'
+                displayOrder:
+                  type: integer
+                  format: int32
+                  examples:
+                  - 1
+                  description: 섹션이 노출될 순서를 지정합니다. 동일한 displayOrder일 경우 최근 생성된 섹션이 먼저 노출됩니다.
+                iconImageUrl:
+                  type: string
+                  examples:
+                  - https://cdn.store.example.com/media/processed/section_premium_weapon.jpg
+                  description: 섹션의 아이콘 이미지 URL을 "미디어 파일 업로드" 기능을 이용해 반환받은 URL을 지정합니다.
+        required: true
+        description: ''
+  /api/v1/incentive/mission/{missionId}:
+    put:
+      tags:
+      - mission
+      summary: 미션 수정
+      security:
+      - Authorization: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                title: 미션수정Ok
+                required:
+                - missionId
+                properties:
+                  missionId:
+                    $ref: '#/components/schemas/Long'
+                    description: 수정한 미션의 식별자가 반환됩니다.
+          description: The request was successful, and the server has returned the requested resource in the response body.
+      parameters:
+      - $ref: '#/components/parameters/missionId'
+      description: |-
+        기등록된 미션을 수정합니다. mission 시작 시간 이전에만 수정이 가능합니다. mission 시작 이후 간단한 오탈자 수정의 경우, 논의 후 수기 대응으로 진행합니다. body의 항목에서 변경이 필요하지 않는 경우, null을 전달합니다. 기존 필드의 삭제를 원하는 경우, "" (empty string), [] (empty list), 0 (zero)을 전달합니다. 삭제 가능 필드
+
+        link
+        mediaUrl
+        mediaType
+        (missionType에 따라) count, difficulties, missionIds
+      operationId: 미션수정
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: []
+              properties:
+                link:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                    - deviceType
+                    - url
+                    properties:
+                      url:
+                        type: string
+                        description: custom URL scheme 으로 디바이스 유형별로 이동할 URL을 지정할 수 있습니다.
+                      deviceType:
+                        enum:
+                        - WEB
+                        - ANDROID
+                        - IOS
+                        type: string
+                        examples:
+                        - WEB
+                        description: |-
+                          미션 이동 경로
+                          각 디바이스별로 모두 입력하는 것을 권장하며 지원하지 않는 디바이스는 입력하지 않습니다.
+                          입력하지 않은 디바이스 유형으로 접근한 사용자는 링크를 제공하지 않습니다.
+                  description: 미션 수행을 위해 이동할 링크를 지정합니다.
+                name:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                    - lang
+                    - contents
+                    properties:
+                      lang:
+                        type: string
+                        examples:
+                        - en
+                        description: 언어코드(en,ko,ja,th,zh)입니다.
+                      contents:
+                        type: string
+                        examples:
+                        - mission name
+                        description: 미션 명칭
+                  description: 사용자에게 노출할 미션의 명칭을 다국어로 지정
+                round:
+                  type: integer
+                  description: |-
+                    미션 반복 회차
+                    미션을 반복 수행할 회차를 지정하지 않으면 무한반복 미션으로 정의됩니다. 회차를 지정하면 missionType에 해당하는 조건이 형식에 맞게 초기화되거나 달성 기준이 변경됩니다.
+                endedAt:
+                  $ref: '#/components/schemas/Timestamp'
+                  description: |-
+                    미션을 종료할 일시
+                    미션 종료 일시 이후에는 해당 미션에 설정된 eventKey로는 업적갱신이 되지 않아야 하면 이는 발송측에서 제어해야 하므로 일시 기록에 유의해야 합니다.
+                    종료 일시 이후에도 eventKey를 발송하면 미션이 추가로 달성될 수 있습니다.
+                eventKey:
+                  type: string
+                  description: |-
+                    3~36 글자 사이의 특정 이벤트를 지칭하는 식별자
+                    레벨업, 수집, 아이템 분해와 같은 사용자의 활동에 대응하는 값으로 업체측에서 지정
+                mediaUrl:
+                  type: string
+                  description: 미션을 효과적으로 표현하기 위한 이미지 또는 영상
+                mediaType:
+                  type: string
+                  examples:
+                  - IMAGE
+                  description: IMAGE/VIDEO
+                startedAt:
+                  type: string
+                  description: |-
+                    미션을 시작할 일시
+                    미션을 게시할 기간이 지정되면 해당 기간에만 미션 달성 처리가 됩니다. 이전에 달성한 이벤트는 무시됩니다.
+                achievement:
+                  type: object
+                  required: []
+                  properties:
+                    count:
+                      type: integer
+                      description: |-
+                        도달해야 하는 업적의 수량
+                        재화 획득 10회라면 10으로 지정하고 재화 획득 업적 이벤트에서 10으로 수신하면 달성이 됩니다.
+                    missionIds:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/Long'
+                      description: |-
+                        달성목표 미션 목록
+                        missionType이 CHALLENGE인 경우 달성해야 완수할 수 있는 대상 missionId 목록을 지정합니다.
+                        지정한 목록의 미션들이 각기 모든 회차까지 완료되어야 챌린지 미션이 될성된 것으로 판단하므로 무한 반복으로 지정된 경우 완수할 수 없게 되므로 주의가 필요합니다.
+                    difficulties:
+                      type: array
+                      items:
+                        type: integer
+                      description: |-
+                        회차별 난이도 설정
+                        missionType을 DIFFICULTY로 지정한 경우 round 수만큼 미션의 달성 업적 수량을 지정합니다.
+                        레벨 달성 구간 70, 90, 100, 105 라면 [70, 90, 100, 105]로 지정하고 round를 4로 지정합니다. 획득 업적 이벤트에서 95를 수신하면 70과 90의 미션이 달성됩니다.
+                  description: 미션 달성 목표를 지정합니다.
+                description:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                    - lang
+                    - contents
+                    properties:
+                      lang:
+                        type: string
+                        examples:
+                        - en
+                        description: "\t언어코드(en,ko,ja,th,zh)입니다."
+                      contents:
+                        type: string
+                        examples:
+                        - mission description
+                        description: 미션 설명입니다.
+                  description: 사용자에게 노출할 미션을 달성할 조건이나 소개의 내용
+                missionType:
+                  type: string
+                  description: |-
+                    미션의 유형
+                    SINGLE: 단일 목표 달성 형태로 달성될 때마다 보상을 획득할 수 있고 회자 지정의 경우 매번 초기화됩니다.
+
+                    ACCUMULATE: 누적 목표 달성 형태로 일정 수치까지 도달하면 보상, 회차 지정의 경우 이전 달성치가 유지된 상태에서 누적 달성량이 증가합니다.
+
+                    DIFFICULTY: 회차별로 미션 난이도가 변화하도록 지정합니다. 회차와 난이도 설정의 횟수가 맞지 않으면 초기 설정 난이도로 회귀합니다.
+
+                    CHALLENGE: 진행 중인 미션들을 컬렉션으로 설정하여 지정한 미션들이 모두 달성되어야 같이 달성이 되어 보상받을 수 있게 됩니다.
+                allowControlType:
+                  type: string
+                  description: 기본값은 BLACKLIST로 controlledCountries 필드의 국가를 지정하지 않으면 모든 국가에서 참여 가능 (WHITELIST, BLACKLIST)
+                controlledCountries:
+                  type: string
+                  description: ISO 3166-1 alpha-2의 2자리 대문자로 표현하는 국가 코드의 목록
+        required: true
+        description: ''
+    delete:
+      tags:
+      - mission
+      summary: 미션 제거
+      security:
+      - Authorization: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: 'null'
+                title: 미션제거Ok
+          description: The request was successful, and the server has returned the requested resource in the response body.
+      parameters:
+      - $ref: '#/components/parameters/missionId'
+      description: |
+        `preview` `prod`
+
+        설정된 미션을 목록에서 제거합니다. 잘못 생성되었거나 더 이상 유지할 이유가 없어진 지난 미션 또는 진행 중인 미션을 즉시 종료 처리해야 하는 긴급사항에서 실행합니다. 내부적으로 데이터가 삭제되지 않으며 사용자 노출이나 미션 보드의 목록 조회 결과에서만 제외됩니다.
+
+        missionId 로는 미션 등록 결과 반환이나 미션 목록 조회에서 확인 가능한 등록된 미션의 식별자를 지정합니다.
+      operationId: 미션제거
+components:
+  schemas:
+    File:
+      type: object
+      required: []
+      properties:
+        file:
+          type: string
+    Long:
+      type: integer
+      format: int64
+      examples:
+      - 10
+    item:
+      type: object
+      required:
+      - sku
+      - imageUrl
+      - name
+      - description
+      properties:
+        sku:
+          type: string
+        name:
+          type: array
+          items:
+            type: object
+            required: []
+            properties:
+              lang:
+                type: string
+              contents:
+                type: string
+        imageUrl:
+          type: string
+        policies:
+          type: object
+          required:
+          - minPrice
+          properties:
+            minPrice:
+              type: array
+              items:
+                type: object
+                required:
+                - price
+                - currency
+                properties:
+                  price:
+                    $ref: '#/components/schemas/Decimal'
+                  currency:
+                    type: string
+            blackList:
+              type: array
+              items:
+                type: string
+            whiteList:
+              type: array
+              items:
+                type: string
+        abilities:
+          type: object
+          required:
+          - name
+          - optionType
+          - unitType
+          - value
+          properties:
+            name:
+              type: array
+              items:
+                type: object
+                required:
+                - lang
+                - contents
+                properties:
+                  lang:
+                    type: string
+                  contents:
+                    type: string
+            value:
+              $ref: '#/components/schemas/Decimal'
+            unitType:
+              enum:
+              - NONE
+              - PERCENTAGE
+              - NUMERIC
+              - LEVEL
+              type: string
+              default: NONE
+              description: |-
+                능력치를 어떤 형식으로 표현할지를 결정하여 지정합니다.
+
+                NONE: 입력한 수치 그대로 노출
+
+                PERCENTAGE: 100% 형식의 표시
+
+                NUMERIC: +100 형식으로 표시
+
+                LEVEL: 100Lv 형식으로 표시
+
+
+                예시는 abilities.value의 값을 100으로 지정했을 때 형식입니다.
+            optionType:
+              enum:
+              - BASIC
+              - CONTRAINT
+              - AMOUNT
+              type: string
+              default: BASIC
+              description: "능력치의 옵션 분류를 지정합니다. 옵션 분류에 따라 표기 위치가 달라집니다.\n\nBASIC: 기본 능력치\n\nCONTRAINT: 제약 옵션 \n\n예) 레벨제한\n\nAMOUNT: 아이템에 포함된 수량"
+        description:
+          type: array
+          items:
+            type: object
+            required:
+            - lang
+            - contents
+            properties:
+              lang:
+                type: string
+              contents:
+                type: string
+        subItemList:
+          type: array
+          items:
+            type: object
+            required:
+            - sku
+            - amount
+            properties:
+              sku:
+                type: string
+              amount:
+                type: string
+      description: ''
+    Price:
+      type: object
+      required:
+      - price
+      properties:
+        price:
+          type: object
+          required:
+          - value
+          - currencyCode
+          - decimalScale
+          - exchangedPrices
+          properties:
+            value:
+              $ref: '#/components/schemas/BigDecimal'
+            currencyCode:
+              type: string
+              examples:
+              - TWD
+              - USD
+              - USDT
+              description: |-
+                결제 화폐 유형.
+                ex) TWD, USD, USDT
+            decimalScale:
+              type: integer
+              description: 소수점 처리 기준 자리수
+            exchangedPrices:
+              type: array
+              items:
+                type: object
+                required:
+                - value
+                - currencyCode
+                - decimalScale
+                properties:
+                  value:
+                    $ref: '#/components/schemas/BigDecimal'
+                    description: 금액
+                  currencyCode:
+                    type: string
+                    examples:
+                    - TWD
+                    - USD
+                    - USDT
+                    description: |-
+                      결제 화폐 유형.
+                      ex) TWD, USD, USDT
+                  decimalScale:
+                    type: integer
+                    description: 소수점 처리 기준 자리수
+              description: USD, KRW 환산가 정보
+      description: ''
+    Author:
+      type: object
+      required:
+      - id
+      - name
+      - address
+      - city
+      - numberOfBooksPublished
+      properties:
+        id:
+          type: integer
+          examples:
+          - 1
+          - 2
+          - 3
+        city:
+          type: string
+          examples:
+          - New York
+          - Boston
+        name:
+          type: string
+          examples:
+          - J.K. Rowling
+          - Henry Miller
+        address:
+          type: string
+          examples:
+          - Lorem ipsum
+        numberOfBooksPublished:
+          type: string
+          examples:
+          - '1'
+          - '3'
+          - '10'
+      description: Creator of books.
+    Decimal:
+      type: number
+      format: double
+    Timestamp:
+      type: integer
+      format: int64
+      examples:
+      - 1738368000000
+      - 1735689600000
+      description: Unix timestamp in seconds
+    BigDecimal:
+      type: number
+      format: double
+      description: 정수의 자리수는 15자리, 소수의 자리수는 10 까지 가능합니다.
+  responses:
+    Conflict:
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - message
+            properties:
+              message:
+                type: string
+                examples:
+                - Lorem ipsum
+      description: The request could not be completed due to a conflict with the current state of the resource. Resolve the conflict and try again.
+    NotFound:
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - message
+            properties:
+              message:
+                type: string
+                examples:
+                - Lorem ipsum
+      description: The server cannot find the requested resource. The endpoint may be invalid or the resource may no longer exist.
+    BadRequest:
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - message
+            properties:
+              message:
+                type: string
+                examples:
+                - Lorem ipsum
+      description: The server could not understand the request due to invalid syntax. The client should modify the request and try again.
+    InternalServerErrror:
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - message
+            properties:
+              message:
+                type: string
+                examples:
+                - Lorem ipsum
+      description: The server encountered an unexpected condition that prevented it from fulfilling the request. Report the issue to the support team if it persists.
+  parameters:
+    sku:
+      in: path
+      name: sku
+      schema:
+        type: string
+      required: true
+    code:
+      in: path
+      name: code
+      schema:
+        type: string
+      required: true
+    guid:
+      in: path
+      name: guid
+      schema:
+        type: string
+      required: true
+    b2cSaleId:
+      in: path
+      name: b2cSaleId
+      schema:
+        type: string
+      required: true
+    c2cSaleId:
+      in: path
+      name: c2cSaleId
+      schema:
+        type: integer
+      required: true
+    missionId:
+      in: path
+      name: missionId
+      schema:
+        type: string
+      required: true
+    sectionId:
+      in: path
+      name: sectionId
+      schema:
+        type: integer
+      required: true
+    Content-Type:
+      in: header
+      name: Content-Type
+      style: simple
+      schema:
+        type: string
+      explode: false
+      description: application/json
+      allowReserved: false
+      allowEmptyValue: true
+  securitySchemes:
+    Authorization:
+      in: header
+      name: Authorization
+      type: apiKey
+      description: Basic `Base64<API key>`
+tags:
+- name: item
+- name: section
+- name: sale
+- name: account
+- name: delivery
+- name: settlement
+- name: mission
