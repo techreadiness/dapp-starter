@@ -12,12 +12,20 @@
 }
 
 .menu {
-    padding: 10px 20px;
+    padding: 10px 0;
     color: #242424;
     font-size: 18px;
     @media (prefers-color-scheme: dark) {
         color: #cccccc;
     }
+}
+
+.menu:first-child {
+    margin-left:20px;
+}
+
+.menu:last-child {
+    margin-right:20px;
 }
 
 .active {

@@ -51,8 +51,12 @@ export const useKaiaWalletSecurity = () => {
 export type Transaction = {
     from: string;
     to: string;
-    value: string;
-    gas: string;
+    value?: string;
+    gas?: string;
+    depositTokenAddress?:string;
+    depositAmount?:string;
+    input?: string;
+    typeInt?: number;
 }
 
 export const useKaiaWalletSdk = () => {
@@ -94,11 +98,17 @@ export const useKaiaWalletSdk = () => {
     },[walletProvider]);
 
     const sendTransaction = useCallback(async(params: Transaction[])=>{
-        await walletProvider.request({ method: 'kaia_sendTransaction', params: params });
+        return await walletProvider.request({ method: 'kaia_sendTransaction', params: params });
+    },[walletProvider]);
+
+    //
+    const getErc20TokenBalanceWithDepositedBalance = useCallback(async(contractAddress: string, account: string)=> {
+        return await walletProvider.getErc20TokenBalanceWithDepositedBalance(contractAddress, account);
     },[walletProvider]);
 
     const getErc20TokenBalance = useCallback(async(contractAddress:string,account:string)=>{
         return await walletProvider.getErc20TokenBalance(contractAddress,account);
     },[walletProvider]);
-  return {getAccount, requestAccount, connectAndSign, disconnectWallet, getBalance, sendTransaction, getErc20TokenBalance}
+
+  return {getAccount, requestAccount, connectAndSign, disconnectWallet, getBalance, sendTransaction, getErc20TokenBalanceWithDepositedBalance, getErc20TokenBalance}
 };
