@@ -23,7 +23,11 @@ export default async function OGImage() {
             >
                 <img
                     src={img as never}
-                    style={{ objectFit: "contain" }}
+                    style={{
+                        maxWidth: '90%',
+                        maxHeight: '90%',
+                        objectFit: 'contain',
+                    }}
                     alt="og"
                 />
             </div>
